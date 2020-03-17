@@ -1,0 +1,143 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{../css/flag-icon.min.css}">
+    <link rel="stylesheet" th:href="@{../css/main.css}">
+    <link rel="stylesheet" th:href="@{../css/profileSummaryCard.css}">
+    <link rel="stylesheet" th:href="@{../css/secondaryNav.css}">
+    <title th:text="'CodeBattle | ' + ${user.username} + ' Profile Edit'"></title>
+</head>
+
+
+<body>
+<header th:replace="fragments/header :: header">...</header>
+
+
+<div class="container">
+    <div class="profile">
+        <div th:replace="fragments/profileSecondaryNav :: profileSecondaryNav(current='edit')"></div>
+
+        <div class="row">
+            <div class="col-md-3 col-xs-3">
+                <div th:replace="fragments/profileSummary :: profileSummary"></div>
+            </div>
+            <div class="col-md-9 col-xs-9">
+                <div class="card-user card">
+                    <div class="card-body">
+                        <p class="h4 mb-4">General</p>
+                        <form th:action="@{/edit/} + ${user.username}" th:object="${editUserForm}" method="POST">
+                            <div class="row">
+                                <div class="pr-1 col-md-6">
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input placeholder="Username" disabled="" type="text" class="form-control" th:value="${user.username}">
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('username')}" >
+                                        <li  th:each="err: ${#fields.errors('username')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                                <div class="pl-1 col-md-6">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input placeholder="Email" type="email" class="form-control" th:value="${user.email}" th:field="*{email}">
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('email')}" >
+                                        <li  th:each="err: ${#fields.errors('email')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="pr-1 col-md-6">
+                                    <div class="form-group">
+                                        <label>First name</label>
+                                        <input placeholder="First name" type="text" class="form-control" th:value="${user.firstName}" th:field="*{firstName}">
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('firstName')}" >
+                                        <li  th:each="err: ${#fields.errors('firstName')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                                <div class="pl-1 col-md-6">
+                                    <div class="form-group">
+                                        <label>Last name</label>
+                                        <input placeholder="Last name" type="text" class="form-control" th:value="${user.lastName}" th:field="*{lastName}">
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('lastName')}" >
+                                        <li  th:each="err: ${#fields.errors('lastName')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="pr-1 col-md-4">
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <input placeholder="City" type="text" class="form-control" th:value="${user.city}" th:field="*{city}">
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('city')}" >
+                                        <li  th:each="err: ${#fields.errors('city')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                                <div class="px-1 col-md-4">
+                                    <div class="form-group">
+                                        <label>Country</label>
+                                        <select class="form-control" th:field="*{countryCode}">
+                                            <option th:if="${user.countryCode == null}" value="">Select your country</option>
+                                            <option th:each="country : ${countries}" th:value="${country.code}" th:text="${country.name}" th:selected="${country.code} == ${user.countryCode}"></option>
+                                        </select>
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('countryCode')}" >
+                                        <li  th:each="err: ${#fields.errors('countryCode')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                                <div class="pl-1 col-md-4">
+                                    <div class="form-group">
+                                        <label>Institute</label>
+                                        <input placeholder="Institute" type="text" class="form-control" th:value="${user.institute}" th:field="*{institute}">
+                                    </div>
+                                    <ul class="text-danger" th:if="${#fields.hasErrors('institute')}" >
+                                        <li  th:each="err: ${#fields.errors('institute')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="text-right form-group">
+                                <button type="submit" class="btn-round btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                        <form th:action="@{/upload-profile-image/} + ${user.username}" enctype="multipart/form-data" method="POST">
+                            <div class="form-group">
+                                <label>Upload photo</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="customFile" name="imageFile">
+                                    <label class="custom-file-label" for="customFile">Choose photo</label>
+                                </div>
+                            </div>
+                            <ul class="text-danger" th:if="${fileUploadErrors}" >
+                                <li  th:each="err: ${fileUploadErrors}" th:text="${err}"></li>
+                            </ul>
+                            <div class="text-right form-group">
+                                <button type="submit" class="btn-round btn btn-primary">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="fragments/footer :: footer">...</footer>
+</div>
+
+<script th:src="@{../js/jquery-3.4.1.min.js}" />
+<script th:src="@{../js/popper.min.js}" />
+<script th:src="@{../js/bootstrap.min.js}" />
+<script>
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
+</body>
+
+</html>

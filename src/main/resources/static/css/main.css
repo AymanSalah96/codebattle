@@ -1,0 +1,246 @@
+
+body{
+    padding-bottom: 50px;
+}
+
+a {
+    color: #212529;
+}
+a:hover {
+    text-decoration: none;
+}
+.navbar {
+    margin-bottom: 30px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,0.6),
+    0 1px 1px rgba(0,0,0,0.1);
+  background-color: transparent !important;
+  z-index: 999;
+}
+
+.avatar img {
+  border-radius: inherit;
+  width: inherit;
+  height: inherit;
+  display: block;
+  position: relative;
+  z-index: 998;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background: #343A40;
+    color: #ffffff;
+}
+
+.community-logo {
+    width: 24px;
+  height: 24px;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,0.6),
+    0 1px 1px rgba(0,0,0,0.1);
+  background-color: transparent !important;
+  z-index: 999;
+    margin-right: 5px;
+}
+
+.community-logo-main {
+     width: 30px;
+  height: 30px;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,0.6),
+    0 1px 1px rgba(0,0,0,0.1);
+  background-color: transparent !important;
+  z-index: 999;
+    margin-right: 5px;
+}
+
+
+table {
+    text-align: center;
+}
+.global-table {
+    font-size: 14px;
+    text-align: center;
+
+}
+
+.fa-trophy {
+    color: darkgoldenrod;
+}
+
+.fa-tasks {
+    color: darkorange;
+}
+
+.copyright-github {
+    color: gray; font-size: 24px;
+}
+
+.copyright-github:hover {
+    color: #1B1F23;
+}
+
+.copyright-linkedin {
+    color: gray; font-size: 24px;
+}
+.copyright-facebook {
+    color: gray; font-size: 24px;
+}
+
+.fa-calendar-alt {
+    color: green;
+}
+
+.fa-trash-alt:hover {
+    color: darkred;
+}
+
+.blog-link {
+        color: #212529;
+
+}
+
+.voting {
+    text-align: right
+}
+.fa-arrow-up:hover {
+    color: darkgreen;
+}
+
+.fa-arrow-down:hover {
+    color: darkred;
+}
+
+
+.fa-bookmark:hover {
+    color: darkcyan;
+}
+
+
+
+.read-more {
+    font-size: 12px;
+
+}
+
+.table-left{
+    text-align: left;
+}
+
+
+.blog-btn {
+    padding: 0 5px;
+}
+
+
+.blog-footer {
+    text-align: right;
+    margin-bottom: 50px;
+    padding-bottom: 5px;
+}
+
+.checked {
+  color: orange;
+}
+
+.contest-nav {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+}
+
+.center {
+   margin: auto;
+  width: 50%;
+}
+
+.contest-nav-link {
+    padding: 10px;
+}
+
+.profile-nav-link {
+    padding: 5px;
+}
+
+.img-thumbnail {
+    border: 0;
+}
+
+.card {
+    padding: 5px;
+}
+.profile-nav {
+    margin-bottom: 20px;
+}
+
+#profile-summary-table {
+    text-align: left;
+    font-size: 14px;
+}
+
+#profile-summary-table td {
+    padding: 5px;
+}
+
+.ojaccountlink {
+    height: 25px;
+    width: 25px;
+    margin: 3px;
+}
+
+footer p {
+margin: 0;
+}
+
+.header-alert{
+margin-top: -15px;
+}
+
+.judgesForm {
+margin-bottom: 0px;
+}
+
+
+/**
+ * Profile image component
+ */
+#header-avatar.profile-header-container{
+    margin: 0 auto;
+    text-align: center;
+}
+
+#header-avatar.profile-header-img {
+    padding: 54px;
+}
+
+#header-avatar.profile-header-img > img.img-circle {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #51D2B7;
+}
+
+#header-avatar.profile-header {
+    margin-top: 43px;
+}
+
+/**
+ * Ranking component
+ */
+#header-avatar.rank-label-container {
+    margin-top: -19px;
+    /* z-index: 1000; */
+    text-align: center;
+}
+
+#header-avatar.label.label-default.rank-label {
+    background-color: rgb(81, 210, 183);
+    padding: 5px 10px 5px 10px;
+    border-radius: 27px;
+}

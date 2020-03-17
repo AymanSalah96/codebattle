@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/flag-icon.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/profileSummaryCard.css}">
+    <link rel="stylesheet" th:href="@{/css/secondaryNav.css}">
+    <title>CodeBattle</title>
+</head>
+<body>
+
+<header th:replace="fragments/header :: header">...</header>
+
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">CodeBattle</h1>
+        <p class="lead">Compete against the problem set !</p>
+        <hr class="my-4">
+        <p>The best way to effectively practice competitive programming</p>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer">...</footer>
+
+</div>
+
+
+<script th:src="@{/js/jquery-3.4.1.min.js}" />
+<script th:src="@{/js/popper.min.js}" />
+<script th:src="@{/js/bootstrap.min.js}" />
+</body>
+
+</html>

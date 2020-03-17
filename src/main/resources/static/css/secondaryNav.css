@@ -1,0 +1,32 @@
+.secondary-nav {
+  text-align: center;
+}
+
+.secondary-nav .secondary-nav-list {
+  float: none;
+  display: inline-block;
+  padding: 0;
+}
+
+.secondary-nav .secondary-nav-list li {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.secondary-nav .secondary-nav-list .active {
+  color: white;
+  background-color: #212529;
+}
+.secondary-nav .secondary-nav-list .nav-link {
+  margin: 1px;
+  border-radius: 5%;
+}
+
+.secondary-nav .secondary-nav-list .nav-link:hover {
+  color: white;
+  background-color: #212529;
+}
+
+.secondary-nav a {
+  color: #212529;
+}

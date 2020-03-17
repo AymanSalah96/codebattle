@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/flag-icon.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{css/loginStyle.css}" />
+    <title>CodeBattle | Register</title>
+</head>
+
+<body>
+<header th:replace="fragments/header :: header">...</header>
+
+<div class="container">
+ 
+    
+<div class="card bg-light">
+<article class="card-body mx-auto" style="max-width: 400px;">
+	<h4 class="card-title mt-3 text-center">Create an Account</h4>
+	<p class="text-center">Add a value to your community and register now!</p>
+
+	<form th:action="@{/register}" method="POST" th:object="${user}">
+        <div class="form-group input-group">
+		<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-at"></i> </span>
+		 </div>
+        <input name="username" class="form-control" placeholder="Username" type="text" th:field="*{username}">
+    </div>
+        <ul class="text-danger" th:if="${#fields.hasErrors('username')}" >
+            <li  th:each="err: ${#fields.errors('username')}" th:text="${err}"></li>
+        </ul>
+	<div class="form-group input-group">
+		<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+		 </div>
+        <input name="firstName" class="form-control" style="max-width: 150px;" placeholder="First Name" type="text" th:field="*{firstName}">
+        <input name="lastName" class="form-control" placeholder="Last Name" type="text" th:field="*{lastName}">
+    </div> <!-- form-group// -->
+        <ul class="text-danger" th:if="${#fields.hasErrors('firstName')}" >
+            <li  th:each="err: ${#fields.errors('firstName')}" th:text="${err}"></li>
+        </ul>
+        <ul class="text-danger" th:if="${#fields.hasErrors('lastName')}" >
+            <li  th:each="err: ${#fields.errors('lastName')}" th:text="${err}"></li>
+        </ul>
+    <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+		 </div>
+        <input name="email" class="form-control" placeholder="Email address" type="email" th:field="*{email}">
+    </div> <!-- form-group// -->
+        <ul class="text-danger" th:if="${#fields.hasErrors('email')}" >
+            <li  th:each="err: ${#fields.errors('email')}" th:text="${err}"></li>
+        </ul>
+    <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+		</div>
+        <input name="password" class="form-control" placeholder="Password" type="password" th:field="*{password}">
+    </div> <!-- form-group// -->
+        <ul class="text-danger" th:if="${#fields.hasErrors('password')}" >
+            <li  th:each="err: ${#fields.errors('password')}" th:text="${err}"></li>
+        </ul>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
+    </div> <!-- form-group// -->      
+    <p class="text-center">Have an account? <a th:href="@{/login}">Login</a> </p>
+</form>
+</article>
+</div>
+    <footer th:replace="fragments/footer :: footer">...</footer>
+
+    
+</div>
+
+
+
+<script th:src="@{/js/jquery-3.4.1.min.js}" />
+<script th:src="@{/js/popper.min.js}" />
+<script th:src="@{/js/bootstrap.min.js}" />
+</body>
+
+</html>

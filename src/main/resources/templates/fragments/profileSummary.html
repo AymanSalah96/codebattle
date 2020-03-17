@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="profileSummary" class="user-summary card">
+    <img class="img-thumbnail img-responsive" th:src="${user.photo} ? @{'/uploads/photos/' + ${user.photo}} : @{/images/avatar.png}" alt="Avatar">
+    <div class="caption">
+        <h4 class="user-full-name"><span th:text="${user.firstName} + ' ' + ${user.lastName}"></span><i class="fas fa-circle online-status"></i></h4>
+        <a th:text="'@' + ${user.username}" th:href="@{'/profile/' + ${user.username}}"></a>
+        <div class="mb-1"><span th:if="${user.countryCode}"><span><span th:class="'flag-icon flag-icon-' + ${user.countryCode.toLowerCase()}"></span></span> <span th:text="${user.countryCode}"></span></span> </span> <span th:if="${user.institute}"><span th:if="${user.countryCode}">|</span> <i class="fas fa-university"></i></span> <span th:if="${user.institute}" th:text="${user.institute}">Assiut University</span></div>
+        <p></p>
+        <div>
+            <table id="profile-summary-table" class="table">
+                <tbody>
+                <tr>
+                    <td><i class="fas fa-chart-line"></i> Rating</td>
+                    <td class="text-right" th:text="${user.rating}">0</td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-globe"></i> Global Ranking</td>
+                    <td class="text-right" th:text="${user.globalRank}">0</td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-map-marker-alt"></i> Local Ranking</td>
+                    <td class="text-right" th:text="${user.localRank}">0</td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-check"></i> Solved Count</td>
+                    <td class="text-right" th:text="${user.solvedCount}">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

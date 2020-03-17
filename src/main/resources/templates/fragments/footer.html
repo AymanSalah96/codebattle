@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+<footer th:fragment="footer">
+    <hr />
+    <div style="text-align: center">
+        <p>&copy; Copyright <span  th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2019</span> Ayman Salah </p>
+        <p  th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd hh:mm:ss zzz')}"></p>
+        <p><a href="https://github.com/AymanSalah96" class="copyright-github" target="_blank"><i class="fab fa-github"></i></a> <a href="https://eg.linkedin.com/in/aymansalah" class="copyright-linkedin" target="_blank"><i class="fab fa-linkedin"></i></a></p>
+    </div>
+</footer>
+</body>
+</html>

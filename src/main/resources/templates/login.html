@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/flag-icon.min.css}">
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+  <link rel="stylesheet" th:href="@{css/loginStyle.css}" />
+  <title>CodeBattle | Login</title>
+</head>
+
+  <body>
+  <header th:replace="fragments/header :: header">...</header>
+
+
+  <div class="container">
+      <div class="card bg-light">
+        <article class="card-body mx-auto" style="max-width: 400px;">
+          <h4 class="card-title mt-3 text-center">Login</h4>
+          <p class="text-center">Contribute to your community now!</p>
+          <form th:action="@{/login}" method="POST">
+            <div th:if="${param.error}">
+              <div class="alert alert-danger">
+                Invalid username or password.
+              </div>
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="username" placeholder="Username" maxlength="128" required>
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="password" name="password" placeholder="Password" maxlength="50" required>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-lg btn-primary btn-block">Login</button>
+            </div>
+            <p class="text-center">
+              Create a new account? <a th:href="@{/register}">Register</a>
+            </p>
+          </form>
+        </article>
+      </div>
+      <footer th:replace="fragments/footer :: footer">...</footer>
+    </div>
+
+  <script th:src="@{/js/jquery-3.4.1.min.js}" />
+  <script th:src="@{/js/popper.min.js}" />
+  <script th:src="@{/js/bootstrap.min.js}" />
+  </body>
+</html>

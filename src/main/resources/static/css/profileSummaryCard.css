@@ -1,0 +1,48 @@
+.user-summary {
+  margin-bottom: 10px;
+}
+
+.user-full-name {
+  margin: 0;
+}
+
+.online-status {
+  font-size: 8px;
+  color: darkgreen;
+  margin-left: 5px;
+}
+
+.country-image {
+  width: 20px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+.profiles-icons {
+  text-align: center;
+}
+
+.img-thumbnail {
+  border: 0;
+  height: 250px;
+}
+
+.card {
+  padding: 5px;
+}
+
+#profile-summary-table {
+  text-align: left;
+  font-size: 14px;
+}
+
+#profile-summary-table td {
+  padding: 5px;
+}
+
+.ojaccountlink {
+  height: 25px;
+  width: 25px;
+  margin: 3px;
+  float: left;
+}
