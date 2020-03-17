@@ -1,5 +1,6 @@
-package com.aymansalah.codebattle.annotation;
+package com.aymansalah.codebattle.validators;
 
+import com.aymansalah.codebattle.annotation.UniqueEmail;
 import com.aymansalah.codebattle.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 

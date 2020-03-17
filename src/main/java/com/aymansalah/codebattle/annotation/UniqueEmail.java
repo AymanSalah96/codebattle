@@ -1,5 +1,7 @@
 package com.aymansalah.codebattle.annotation;
 
+import com.aymansalah.codebattle.validators.UniqueEmailValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
