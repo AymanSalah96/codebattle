@@ -1,1 +1,3 @@
-# codebattle
+# CodeBattle
+
+> Competitive programming platform
