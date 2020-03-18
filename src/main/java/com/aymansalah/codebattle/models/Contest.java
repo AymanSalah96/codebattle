@@ -19,6 +19,9 @@ public class Contest {
     @Column(name = "contest_id")
     private long id;
 
+    @Column(name = "contest_name")
+    private String name;
+
     @Column(name = "contest_duration_in_seconds")
     private int durationInSeconds;
 

@@ -4,6 +4,7 @@ import com.aymansalah.codebattle.models.Problem;
 import com.aymansalah.codebattle.services.ContestService;
 import com.aymansalah.codebattle.services.ProblemService;
 import com.aymansalah.codebattle.services.UserService;
+import com.aymansalah.codebattle.validators.FileUploadValidator;
 import com.aymansalah.codebattle.validators.ProblemValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,12 +52,18 @@ public class ProblemController {
     public String postNewProblem(@RequestParam("ioFiles")MultipartFile[] ioFiles,
                                  @ModelAttribute("problem") Problem problem,
                                  BindingResult result,
+                                 Model model,
                                  RedirectAttributes redirectAttributes) {
 
         ProblemValidator.validate(problem, result);
-        if(result.hasErrors()) {
+        List<String> ioFilesErrors = FileUploadValidator.validateProblemIOFiles(ioFiles);
+        if(result.hasErrors() || !ioFilesErrors.isEmpty()) {
+            model.addAttribute("ioFilesErrors", ioFilesErrors);
             return "problem/new";
         }
+        problemService.createNewProblem(problem, ioFiles);
+        redirectAttributes.addFlashAttribute("alert", "Problem created successfully");
+        redirectAttributes.addFlashAttribute("alertType", "success");
         return "redirect:/problems";
     }
 }

@@ -7,6 +7,7 @@ import com.aymansalah.codebattle.repositories.AuthGroupRepository;
 import com.aymansalah.codebattle.repositories.UserRepository;
 import com.aymansalah.codebattle.util.NullAwareBeanUtilsBeanAndIgnoreIdProperty;
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -84,4 +85,14 @@ public class UserService implements UserDetailsService {
         this.userRepository.saveAndFlush(user);
     }
 
+    public String getAuthenticatedUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
+    }
 }

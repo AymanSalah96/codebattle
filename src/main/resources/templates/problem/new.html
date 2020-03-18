@@ -20,6 +20,7 @@
 
     <div class="row">
         <div class="col-md-8 col-xs-8">
+            <h5>Problem Creator</h5>
             <form th:action="@{/problems/new/}" th:object="${problem}" enctype="multipart/form-data" th:method="POST">
                 <div class="form-group">
                     <label>Name</label>
@@ -69,14 +70,14 @@
                         <input type="file" class="custom-file-input" id="customFile" name="ioFiles" multiple>
                         <label class="custom-file-label" for="customFile">Input/Output Files</label>
                     </div>
-                    <ul class="text-danger" th:if="${ioFilesProblems}" >
-                        <li  th:each="err: ${ioFilesProblems}" th:text="${err}"></li>
+                    <ul class="text-danger" th:if="${ioFilesErrors}" >
+                        <li  th:each="err: ${ioFilesErrors}" th:text="${err}"></li>
                     </ul>
                     <ul>
-                        <li><small class="form-text text-muted">Input files must end with ".in"</small></li>
-                        <li><small class="form-text text-muted">Output files must end with ".out"</small></li>
-                        <li> <small class="form-text text-muted">Each two I/O files that represents the same test must have same name</small></li>
-                        <li><small class="form-text text-muted">Sample files must be prefixed with "sample" and follow all the conditions above</small></li>
+                        <li><small class="form-text text-muted">Input files must end with '.in'</small></li>
+                        <li><small class="form-text text-muted">Output files must end with '.out'</small></li>
+                        <li> <small class="form-text text-muted">Each input must has the same name of it's output file</small></li>
+                        <li><small class="form-text text-muted">Sample files must begin with 'sample' and follow all the conditions above</small></li>
                         <li><small class="form-text text-muted">Must exists at least one sample and one main test files</small></li>
                     </ul>
                 </div>
@@ -86,7 +87,6 @@
             </form>
         </div>
         <div class="col-md-4 col-xs-4">
-            fsdafdfdgfnbfdsd
         </div>
     </div>
 
@@ -103,20 +103,9 @@ $(".custom-file-input").on("change", function() {
   if(fi.files.length < 4) {
     $('#customFile').val('');
     alert("Please select at least 4 files");
+  } else {
+    $(this).siblings(".custom-file-label").addClass("selected").html(fi.files.length + " files selected");
   }
-    else if (fi.files.length > 0) {
-        for (const i = 0; i <= fi.files.length - 1; i++) {
-            const fsize = fi.files.item(i).size;
-            const file = Math.round((fsize / 1024));
-            // The size of the file.
-            if (file >= 2048) {
-                $('#customFile').val('');
-                alert("Please select an image less than 2mb");
-            } else {
-                $(this).siblings(".custom-file-label").addClass("selected").html(fi.files.length + " files selected");
-            }
-        }
-    }
 });
 </script>
 </body>

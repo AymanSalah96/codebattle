@@ -5,7 +5,7 @@ import com.aymansalah.codebattle.services.CountryService;
 import com.aymansalah.codebattle.services.FileUploadService;
 import com.aymansalah.codebattle.services.UserService;
 import com.aymansalah.codebattle.validators.EditUserFormValidator;
-import com.aymansalah.codebattle.validators.ImageUploadValidator;
+import com.aymansalah.codebattle.validators.FileUploadValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -89,7 +89,7 @@ public class ProfileController {
     @PostMapping("/upload-profile-image/{username}")
     @PreAuthorize("#username == authentication.principal.username")
     public String uploadPhoto(@PathVariable("username") String username, @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes redirectAttributes) {
-        List<String> errors = ImageUploadValidator.validateImage(imageFile);
+        List<String> errors = FileUploadValidator.validateImage(imageFile);
         if(!errors.isEmpty()) {
             redirectAttributes.addFlashAttribute("fileUploadErrors", errors);
             return "redirect:/edit/{username}";
