@@ -29,6 +29,11 @@ public class FileUploadService {
         return true;
     }
 
+    // TODO: Implement this method
+    public boolean saveIOFilesForProblemId(long problemId, MultipartFile[] ioFiles) {
+        return true;
+    }
+
     private static String getPersonalizedFileNameForUsername(String username, MultipartFile file) {return username + getFileExtension(file.getOriginalFilename());}
     private static void createDirectoriesIfNotExists(String path) {
         new File(path).mkdirs();

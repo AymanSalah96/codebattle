@@ -1,10 +1,9 @@
 package com.aymansalah.codebattle.controllers;
 
 import com.aymansalah.codebattle.models.User;
-import com.aymansalah.codebattle.services.UserService;
-import com.aymansalah.codebattle.services.AuthService;
 import com.aymansalah.codebattle.services.CountryService;
 import com.aymansalah.codebattle.services.FileUploadService;
+import com.aymansalah.codebattle.services.UserService;
 import com.aymansalah.codebattle.validators.EditUserFormValidator;
 import com.aymansalah.codebattle.validators.ImageUploadValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,20 +48,9 @@ public class ProfileController {
     }
 
     @GetMapping("/edit/{username}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("#username == authentication.principal.username")
     public String getEditPage(@PathVariable String username, Model model, RedirectAttributes redirectAttributes) {
         User existingUser = userService.getByUserName(username);
-        if(null == existingUser) {
-            redirectAttributes.addFlashAttribute("alert", "The requested profile doesn't exist");
-            redirectAttributes.addFlashAttribute("alertType", "primary");
-            return "redirect:/";
-        }
-
-        if(!AuthService.isAuthenticatedByUsername(username)) {
-            redirectAttributes.addFlashAttribute("alert", "You haven't any permission to access the requested page");
-            redirectAttributes.addFlashAttribute("alertType", "danger");
-            return "redirect:/";
-        }
         model.addAttribute("user", existingUser);
         model.addAttribute("editUserForm", existingUser);
         model.addAttribute("countries", countryService.getAllCountries());
@@ -70,22 +58,12 @@ public class ProfileController {
     }
 
     @PostMapping("/edit/{username}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("#username == authentication.principal.username")
     public String postEditPage(@PathVariable String username, @ModelAttribute("editUserForm") User editUserForm, Model model, BindingResult result, RedirectAttributes redirectAttributes) {
         if(result.hasErrors()) {
             return "profile/edit";
         }
         User existingUser = userService.getByUserName(username);
-        if(null == existingUser) {
-            redirectAttributes.addFlashAttribute("alert", "The requested profile doesn't exist");
-            redirectAttributes.addFlashAttribute("alertType", "primary");
-            return "redirect:/";
-        }
-        if(!AuthService.isAuthenticatedByUsername(username)) {
-            redirectAttributes.addFlashAttribute("alert", "You haven't any permission to access the requested page");
-            redirectAttributes.addFlashAttribute("alertType", "danger");
-            return "redirect:/";
-        }
 
         new EditUserFormValidator().validate(editUserForm, result);
         // Check if email is changed and the new one is already exists in the database
@@ -109,18 +87,8 @@ public class ProfileController {
     }
 
     @PostMapping("/upload-profile-image/{username}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("#username == authentication.principal.username")
     public String uploadPhoto(@PathVariable("username") String username, @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes redirectAttributes) {
-        if(!userService.isUsernameExists(username)) {
-            redirectAttributes.addFlashAttribute("alert", "The requested profile doesn't exist");
-            redirectAttributes.addFlashAttribute("alertType", "primary");
-            return "redirect:/";
-        }
-        if(!AuthService.isAuthenticatedByUsername(username)) {
-            redirectAttributes.addFlashAttribute("alert", "You haven't any permission to access the requested page");
-            redirectAttributes.addFlashAttribute("alertType", "danger");
-            return "redirect:/";
-        }
         List<String> errors = ImageUploadValidator.validateImage(imageFile);
         if(!errors.isEmpty()) {
             redirectAttributes.addFlashAttribute("fileUploadErrors", errors);

@@ -5,8 +5,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,29 +21,29 @@ public class Problem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be empty")
     @Column(name = "problem_name")
     private String name;
 
-    @NotNull
+    @NotBlank
     @Column(name = "problem_index")
     private String index;
 
     @NotNull
+    @NotBlank
     @Column(name = "problem_input")
     private String inputDescription;
 
     @NotNull
+    @NotBlank
     @Column(name = "problem_output")
     private String outputDescription;
 
     @NotNull
+    @NotBlank
     @Column(name = "problem_description")
     private String description;
-
-    @NotNull
-    @Column(name = "problem_judge_solution_file_id")
-    private long judgeSolutionFileId;
 
     @NotNull
     @Column(name = "problem_checker_id")
@@ -63,7 +65,18 @@ public class Problem {
     @Column(name = "problem_score")
     private int score;
 
-    @NotNull
-    @Column(name = "problem_input_file_id")
-    private int inputFileId;
+    @Column(name = "problem_notes")
+    private String notes;
+
+    @Column(name = "problem_tutorial")
+    private String tutorial;
+
+    @OneToMany
+    @JoinColumn(name = "problem_id")
+    List<InputOutputFile> ioFiles;
+
+    @OneToMany
+    @JoinColumn(name = "author_id")
+    List<Submission> submissions;
+
 }

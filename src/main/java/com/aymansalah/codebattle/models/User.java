@@ -11,6 +11,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -84,4 +87,5 @@ public class User {
 
     @Column(name = "solved_count", columnDefinition = "integer default 0")
     private int solvedCount;
+
 }

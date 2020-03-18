@@ -46,3 +46,11 @@
   margin: 3px;
   float: left;
 }
+
+#userProfileSummaryMainInfo {
+    margin-bottom: 15px;
+}
+
+#userSummaryNameAndHandle {
+margin-bottom: 10px;
+}

@@ -10,17 +10,21 @@
 
 <div th:replace="fragments/header :: header('')"></div>
 
-<div class="content">
-    <div class="container main-content">
-        <ul class="list-group">
-            <li class="list-group-item list-group-item-danger"><h3 th:text="${error}">Status</h3></li>
-            <li class="list-group-item" th:text="'Status code: '+ ${status}"></li>
-        </ul>
+<div class="container">
+    <div class="content">
+        <div class="container main-content">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-danger"><h3 th:text="${error}">Status</h3></li>
+                <li class="list-group-item" th:text="'Status code: '+ ${status}"></li>
+            </ul>
+        </div>
     </div>
+
+    <footer th:replace="fragments/footer :: footer">...</footer>
 </div>
 
-<script th:src="@{/js/jquery-3.4.1.min.js}" />
-<script th:src="@{/js/popper.min.js}" />
-<script th:src="@{/js/bootstrap.min.js}" />
+<script th:src="@{/js/jquery-3.4.1.min.js}" ></script>
+<script th:src="@{/js/popper.min.js}" ></script>
+<script th:src="@{/js/bootstrap.min.js}" ></script>
 </body>
 </html>

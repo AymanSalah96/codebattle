@@ -129,13 +129,29 @@
     <footer th:replace="fragments/footer :: footer">...</footer>
 </div>
 
-<script th:src="@{../js/jquery-3.4.1.min.js}" />
-<script th:src="@{../js/popper.min.js}" />
-<script th:src="@{../js/bootstrap.min.js}" />
+<script th:src="@{../js/jquery-3.4.1.min.js}" ></script>
+<script th:src="@{../js/popper.min.js}" ></script>
+<script th:src="@{../js/bootstrap.min.js}" ></script>
 <script>
 $(".custom-file-input").on("change", function() {
-  var fileName = $(this).val().split("\\").pop();
-  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  const fi = document.getElementById('customFile');
+  if(fi.files.length > 1) {
+        $('#customFile').val('');
+         alert("Please select only one image");
+  } else if (fi.files.length > 0) {
+        for (const i = 0; i <= fi.files.length - 1; i++) {
+            const fsize = fi.files.item(i).size;
+            const file = Math.round((fsize / 1024));
+            // The size of the file.
+            if (file >= 1024) {
+                $('#customFile').val('');
+                alert("Please select an image of size less than 1mb");
+            } else {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            }
+        }
+    }
 });
 </script>
 </body>
