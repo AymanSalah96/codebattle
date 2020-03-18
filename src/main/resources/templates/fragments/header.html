@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
-<header th:fragment="header">
+<header th:fragment="header(current)">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -15,8 +15,11 @@
             </button>
             <div id="navbarNavDropdown" class="navbar-collapse collapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+                    <li class="nav-item" th:classappend="${current} == 'home' ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item" th:classappend="${current} == 'problems' ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/problems}">Problems</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -30,9 +33,9 @@
                     </li>
 
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" th:href="@{/login}">Login</a>
+                        <a class="nav-link" th:classappend="${current} == 'login' ? 'active' : ''" th:href="@{/login}">Login</a>
                     </li>
-                    <li class="nav-item" sec:authorize="isAnonymous()">
+                    <li class="nav-item" th:classappend="${current} == 'register' ? 'active' : ''" sec:authorize="isAnonymous()">
                         <a class="nav-link" th:href="@{/register}">Register</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">

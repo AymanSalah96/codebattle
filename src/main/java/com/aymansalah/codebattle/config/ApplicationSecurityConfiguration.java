@@ -52,13 +52,13 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .antMatchers(
                         "/",
                         "/register",
-                        "/profile/*",
-                        "/css/*",
-                        "/flags/4x3/*",
-                        "/flags/1x1/*",
-                        "/js/*",
-                        "/images/*",
-                        "/uploads/photos/*").permitAll()
+                        "/profile/**",
+                        "/problems/**",
+                        "/css/**",
+                        "/flags/**",
+                        "/js/**",
+                        "/images/**",
+                        "/uploads/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
