@@ -54,6 +54,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                         "/register",
                         "/profile/**",
                         "/problems/**",
+                        "/contests/**",
                         "/css/**",
                         "/flags/**",
                         "/js/**",

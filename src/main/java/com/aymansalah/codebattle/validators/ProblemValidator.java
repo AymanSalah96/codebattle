@@ -9,12 +9,10 @@ public class ProblemValidator {
     // TODO: Complete this method
     public static void validate(Problem problem, BindingResult result) {
         validateName(problem.getName(), result);
-        validateIndex(problem.getIndex(), result);
         validateInputDescription(problem.getInputDescription(), result);
         validateOutputDescription(problem.getOutputDescription(), result);
         validateDescription(problem.getDescription(), result);
         validateCheckerId(problem.getCheckerId(), result);
-        validateContestId(problem.getContestId(), result);
         validateTimer(problem.getTimerInSeconds(), result);
         validateCreationDate(problem.getCreationDate(), result);
         validateScore(problem.getScore(), result);
@@ -37,9 +35,6 @@ public class ProblemValidator {
     private static void validateTimer(int timerInSeconds, BindingResult result) {
     }
 
-    private static void validateContestId(long contestId, BindingResult result) {
-    }
-
     private static void validateCheckerId(int checkerId, BindingResult result) {
     }
 
@@ -56,9 +51,6 @@ public class ProblemValidator {
     private static void validateInputDescription(String inputDescription, BindingResult result) {
         if(CommonValidators.isNull(inputDescription) || CommonValidators.isBlank(inputDescription))
             result.rejectValue("inputDescription", null, "Input description cannot be empty");
-    }
-
-    private static void validateIndex(String index, BindingResult result) {
     }
 
     private static void validateName(String name, BindingResult result) {

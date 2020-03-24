@@ -2,7 +2,7 @@ package com.aymansalah.codebattle.util.judge.checkers;
 
 import java.io.*;
 
-public class LineChecker implements Checker {
+public class LineChecker extends Checker {
 
     private BufferedReader judgeFileReader;
     private BufferedReader participantFileReader;

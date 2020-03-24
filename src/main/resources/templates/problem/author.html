@@ -5,11 +5,11 @@
 <head>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{../css/flag-icon.min.css}">
-    <link rel="stylesheet" th:href="@{../css/main.css}">
-    <link rel="stylesheet" th:href="@{../css/profileSummaryCard.css}">
-    <link rel="stylesheet" th:href="@{../css/secondaryNav.css}">
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{../../css/flag-icon.min.css}">
+    <link rel="stylesheet" th:href="@{../../css/main.css}">
+    <link rel="stylesheet" th:href="@{../../css/profileSummaryCard.css}">
+    <link rel="stylesheet" th:href="@{../../css/secondaryNav.css}">
     <title>CodeBattle | Problems</title>
 </head>
 <body>
@@ -18,14 +18,11 @@
 
 <div class="container">
     <div class="text-right createBtn" sec:authorize="isAuthenticated()">
-        <a type="button" class="btn btn-dark" th:href="@{/problems/author/} + ${#authentication.getPrincipal().getUsername()}">
-            My problems
-        </a>
         <a type="button" class="btn btn-dark" th:href="@{/problems/new}">
             <i class="fas fa-plus-circle"></i> New
         </a>
     </div>
-    <h5>Problems</h5>
+    <h5>My Problems</h5>
     <div class="alert alert-primary" role="alert" th:if="${problemsList==null or problemsList.isEmpty()}">
         No problems yet!
     </div>
@@ -34,16 +31,14 @@
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Editorial</th>
-            <th>Solved</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <tr class="table-row " th:each="problem,iter : ${problemsList}">
             <td th:text="${iter.count}"></td>
             <td><a  th:text="${problem.name}" th:href="@{/problems/} + ${problem.id}"></a></td>
-            <td><a th:if="${problem.tutorial}" th:href="@{/tutorials/} + ${problem.id}"><i class="fas fa-file-alt"></i></a></td>
-            <td><a th:text="${problem.getACSubmissionsCount()}" th:href="@{/problems/} + ${problem.id} + '/submissions'"></a></td>
+            <td><a th:href="@{/problems/edit/} + ${problem.id} + '?username=' + ${#authentication.getPrincipal().getUsername()}"><i class="fas fa-edit"></i></a></td>
         </tr>
         </tbody>
     </table>
@@ -52,9 +47,9 @@
     <footer th:replace="fragments/footer :: footer">...</footer>
 </div>
 
-<script th:src="@{../js/jquery-3.4.1.min.js}" ></script>
-<script th:src="@{../js/popper.min.js}" ></script>
-<script th:src="@{../js/bootstrap.min.js}" ></script>
+<script th:src="@{../../js/jquery-3.4.1.min.js}" ></script>
+<script th:src="@{../../js/popper.min.js}" ></script>
+<script th:src="@{../../js/bootstrap.min.js}" ></script>
 <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 </body>
 

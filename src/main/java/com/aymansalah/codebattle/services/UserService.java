@@ -6,6 +6,7 @@ import com.aymansalah.codebattle.models.User;
 import com.aymansalah.codebattle.repositories.AuthGroupRepository;
 import com.aymansalah.codebattle.repositories.UserRepository;
 import com.aymansalah.codebattle.util.NullAwareBeanUtilsBeanAndIgnoreIdProperty;
+import com.aymansalah.codebattle.util.judge.Helper;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -66,20 +67,10 @@ public class UserService implements UserDetailsService {
 
     public User update(String username, User user) {
         User existingUser = this.getByUserName(username);
-        return this.userRepository.saveAndFlush(replaceNotNullProperties(existingUser, user));
+        return this.userRepository.saveAndFlush((User) Helper.replaceNotNullProperties(existingUser, user));
     }
 
-    private User replaceNotNullProperties(User existingUser, User updatedUser) {
-        BeanUtilsBean notNull = new NullAwareBeanUtilsBeanAndIgnoreIdProperty();
-        try {
-            notNull.copyProperties(existingUser, updatedUser);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return existingUser;
-    }
+
 
     public void save(User user) {
         this.userRepository.saveAndFlush(user);

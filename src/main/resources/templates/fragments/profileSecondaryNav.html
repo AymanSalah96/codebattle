@@ -4,11 +4,8 @@
 <div th:fragment="profileSecondaryNav(current)" class="secondary-nav">
     <ul class="secondary-nav-list">
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'profile' ? 'active' : ''" th:href="@{'/profile/' + ${user.username}}">Profile</a></li>
-        <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'posts' ? 'active' : ''" th:href="@{'/posts/' + ${user.username}}">Posts</a></li>
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'submissions' ? 'active' : ''" th:href="@{'/submissions/' + ${user.username}}">Submissions</a></li>
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'contests' ? 'active' : ''" th:href="@{'/contests/' + ${user.username}}">Contests</a></li>
-        <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'communities' ? 'active' : ''" th:href="@{'/communities/' + ${user.username}}">Communities</a></li>
-        <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'achievements' ? 'active' : ''" th:href="@{'/achievements/' + ${user.username}}">Achievements</a></li>
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'edit' ? 'active' : ''" th:href="@{'/edit/' + ${user.username}}" sec:authorize="isAuthenticated()" th:if="${#authentication.getPrincipal().getUsername()} == ${user.username}">Edit Profile</a></li>
     </ul>
 </div>

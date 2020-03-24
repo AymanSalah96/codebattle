@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{../../css/flag-icon.min.css}">
+    <link rel="stylesheet" th:href="@{../../css/main.css}">
+    <link rel="stylesheet" th:href="@{../../css/profileSummaryCard.css}">
+    <link rel="stylesheet" th:href="@{../../css/secondaryNav.css}">
+    <title>CodeBattle | My Contests</title>
+</head>
+<body>
+
+<header th:replace="fragments/header :: header('contests')">...</header>
+
+<div class="container">
+    <div class="text-right createBtn" sec:authorize="isAuthenticated()">
+        <a type="button" class="btn btn-dark" th:href="@{/contests/new}">
+            <i class="fas fa-plus-circle"></i> New
+        </a>
+    </div>
+    <h5>My contests</h5>
+    <div class="alert alert-primary" role="alert" th:if="${contestsList==null or contestsList.isEmpty()}">
+        No contests yet!
+    </div>
+    <table class="table table-striped table-bordered nowrap datatable table-sm" th:if="${contestsList!=null and !contestsList.isEmpty()}">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Start</th>
+            <th>Duration</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-row " th:each="contest,iter : ${contestsList}">
+            <td th:text="${iter.count}"></td>
+            <td><a  th:text="${contest.name}" th:href="@{/contests/} + ${contest.id}"></a></td>
+            <td th:text="${contest.startDate}"></td>
+            <td th:text="${contest.durationInMinutes}"></td>
+            <td><a th:href="@{/contests/edit/} + ${contest.id} + '?username=' + ${#authentication.getPrincipal().getUsername()}"><i class="fas fa-edit"></i></a></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <footer th:replace="fragments/footer :: footer">...</footer>
+</div>
+
+<script th:src="@{../../js/jquery-3.4.1.min.js}" ></script>
+<script th:src="@{../../js/popper.min.js}" ></script>
+<script th:src="@{../../js/bootstrap.min.js}" ></script>
+<script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+</body>
+
+</html>

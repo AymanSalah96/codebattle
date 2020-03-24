@@ -5,7 +5,7 @@
     <div class="caption">
         <div id="userProfileSummaryMainInfo">
             <div id="userSummaryNameAndHandle">
-                <h4 class="user-full-name"><span th:text="${user.firstName} + ' ' + ${user.lastName}"></span><i class="fas fa-circle online-status"></i></h4>
+                <h4 class="user-full-name"><span th:text="${user.firstName} + ' ' + ${user.lastName}"></span></h4>
                 <a th:text="'@' + ${user.username}" th:href="@{'/profile/' + ${user.username}}"></a>
             </div>
             <div class="mb-1"><span th:if="${user.countryCode}"><span><span th:class="'flag-icon flag-icon-' + ${user.countryCode.toLowerCase()}"></span></span> <span th:text="${user.countryCode}"></span></span> </span> <span th:if="${user.institute}"><span th:if="${user.countryCode}">|</span> <i class="fas fa-university"></i></span> <span th:if="${user.institute}" th:text="${user.institute}">Assiut University</span></div>

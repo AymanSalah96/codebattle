@@ -1,5 +1,6 @@
 package com.aymansalah.codebattle.models;
 
+import com.aymansalah.codebattle.util.judge.SampleTest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,9 +27,6 @@ public class Problem {
     @NotBlank(message = "Name cannot be empty")
     @Column(name = "problem_name")
     private String name;
-
-    @Column(name = "problem_index")
-    private String index;
 
     @NotNull
     @NotBlank
@@ -54,9 +54,6 @@ public class Problem {
     @Column(name = "problem_creation_date")
     private Date creationDate;
 
-    @Column(name = "problem_contest_id")
-    private long contestId;
-
     @NotNull
     @Column(name = "problem_score")
     private int score;
@@ -71,13 +68,19 @@ public class Problem {
     private String creatorUsername;
 
     @OneToMany
-    @JoinColumn(name = "problem_id")
-    private List<InputOutputFile> inputOutputFiles;
-
-    @OneToMany
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_username")
     private List<Submission> submissions;
 
+    @Transient
+    private List<File> io;
+
+    @Transient
+    private List<SampleTest> samples;
+
+    @Transient
+    private String index;
+
+    // TODO: fix this method it's not working correctly
     public int getACSubmissionsCount() {
         int count = 0;
         for(Submission submission : submissions)

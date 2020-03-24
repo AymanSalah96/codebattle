@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{../../css/main.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../css/profileSummaryCard.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../css/secondaryNav.css}">
-    <title>CodeBattle | Problem Creator</title>
+    <title>CodeBattle | Edit Problem</title>
 </head>
 
 <body>
@@ -19,51 +19,52 @@
 <div class="container">
 
     <h5>Problem Creator</h5>
-    <form th:action="@{/problems/new/}" th:object="${problem}" enctype="multipart/form-data" th:method="POST">
+    <form th:action="@{/problems/edit/} + ${problem.id}" th:object="${problemEditForm}" enctype="multipart/form-data" th:method="POST">
+        <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
         <div class="form-group">
             <label>Name</label>
-            <input type="text" class="form-control" placeholder="Problem name" th:field="*{name}">
+            <input type="text" class="form-control" placeholder="Problem name" th:value="${problem.name}" th:field="*{name}">
         </div>
         <ul class="text-danger" th:if="${#fields.hasErrors('name')}" >
             <li  th:each="err: ${#fields.errors('name')}" th:text="${err}"></li>
         </ul>
         <div class="form-group">
             <label>Description</label>
-            <textarea class="form-control" placeholder="Description" rows="10" th:field="*{description}"></textarea>
+            <textarea class="form-control" placeholder="Description" rows="10" th:value="${problem.description}" th:field="*{description}"></textarea>
         </div>
         <ul class="text-danger" th:if="${#fields.hasErrors('description')}" >
             <li  th:each="err: ${#fields.errors('description')}" th:text="${err}"></li>
         </ul>
         <div class="form-group">
             <label>Input</label>
-            <textarea class="form-control" placeholder="Input" rows="5" th:field="*{inputDescription}"></textarea>
+            <textarea class="form-control" placeholder="Input" rows="5" th:value="${problem.inputDescription}" th:field="*{inputDescription}"></textarea>
         </div>
         <ul class="text-danger" th:if="${#fields.hasErrors('inputDescription')}" >
             <li  th:each="err: ${#fields.errors('inputDescription')}" th:text="${err}"></li>
         </ul>
         <div class="form-group">
             <label>Output</label>
-            <textarea class="form-control" placeholder="Output" rows="5" th:field="*{outputDescription}"></textarea>
+            <textarea class="form-control" placeholder="Output" rows="5" th:value="${problem.outputDescription}" th:field="*{outputDescription}"></textarea>
         </div>
         <ul class="text-danger" th:if="${#fields.hasErrors('outputDescription')}" >
             <li  th:each="err: ${#fields.errors('outputDescription')}" th:text="${err}"></li>
         </ul>
         <div class="form-group">
             <label>Notes</label>
-            <textarea class="form-control" placeholder="Notes" rows="5" th:field="*{notes}"></textarea>
+            <textarea class="form-control" placeholder="Notes" rows="5" th:value="${problem.notes}" th:field="*{notes}"></textarea>
         </div>
         <ul class="text-danger" th:if="${#fields.hasErrors('notes')}" >
             <li  th:each="err: ${#fields.errors('notes')}" th:text="${err}"></li>
         </ul>
         <div class="form-group">
             <label>Tutorial</label>
-            <textarea class="form-control" placeholder="Tutorial" th:field="*{tutorial}"></textarea>
+            <textarea class="form-control" placeholder="Tutorial" th:value="${problem.tutorial}" th:field="*{tutorial}"></textarea>
         </div>
         <ul class="text-danger" th:if="${#fields.hasErrors('tutorial')}" >
             <li  th:each="err: ${#fields.errors('tutorial')}" th:text="${err}"></li>
         </ul>
         <div class="form-group">
-            <label>Input/Output Files</label>
+            <label>Change Input/Output files</label>
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="customFile" name="ioFiles" multiple>
                 <label class="custom-file-label" for="customFile">Input/Output Files</label>
@@ -72,6 +73,7 @@
                 <li  th:each="err: ${ioFilesErrors}" th:text="${err}"></li>
             </ul>
             <ul>
+                <li><small class="form-text text-muted">If you don't select any files the old tests will remain</small></li>
                 <li><small class="form-text text-muted">Input files must end with '.in'</small></li>
                 <li><small class="form-text text-muted">Output files must end with '.out'</small></li>
                 <li> <small class="form-text text-muted">Each input must has the same name of it's output file</small></li>
@@ -79,21 +81,8 @@
                 <li><small class="form-text text-muted">Must exists at least one sample and one main test files</small></li>
             </ul>
         </div>
-        <div class="row">
-            <div class="form-group col-6">
-                <label>Score</label>
-                <input type="number" class="form-control" min="0" step="1" placeholder="Score" th:field="*{score}"/>
-            </div>
-            <div class="form-group col-6">
-                <label>Checker</label>
-                <select class="form-control">
-                    <option>Sequence of tokens</option>
-                    <option>Line by line</option>
-                </select>
-            </div>
-        </div>
         <div class="text-right form-group">
-            <button type="submit" class="btn-round btn btn-primary">Submit</button>
+            <button type="submit" class="btn-round btn btn-primary">Save</button>
         </div>
     </form>
 

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" type="text/css" th:href="@{../../../css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../../../css/flag-icon.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../../../css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../../../css/profileSummaryCard.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../../../css/secondaryNav.css}">
+
+    <title>CodeBattle | Edit Problem</title>
+</head>
+
+<body>
+
+<header th:replace="fragments/header :: header('problems')">...</header>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-9">
+            <div class="problem-statement">
+                <div class="problem-section problem-header">
+                    <h5 th:text="${problem.index != null ? problem.index + '. ' : ''} + ${problem.name}" class="text-center font-weight-bold"></h5>
+                </div>
+                <div class="problem-section problem-description">
+                    <div th:text="${problem.description}"></div>
+                </div>
+                <div class="problem-section problem-input-section">
+                    <h6 class="font-weight-bold">Input</h6>
+                    <div th:text="${problem.inputDescription}"></div>
+                </div>
+                <div class="problem-section problem-output-section">
+                    <h6 class="font-weight-bold">Output</h6>
+                    <div th:text="${problem.outputDescription}"></div>
+                </div>
+                <div class="problem-section problem-io-examples" th:if="${problem.samples}">
+                    <h6 class="font-weight-bold">Examples</h6>
+                    <table class="table text-left" th:each="sample : ${problem.samples}">
+                        <thead>
+                            <tr class="row">
+                                <td class="col-6">input</td>
+                                <td class="col-6">output</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="row">
+                                <td class="example-input col-6">
+                                    <pre th:text="${sample.input}"></pre>
+                                </td>
+                                <td class="example-output col-6">
+                                    <pre th:text="${sample.output}"></pre>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="problem-section problem-notes-section" th:if="${problem.notes}">
+                    <h6 class="font-weight-bold">Notes</h6>
+                    <div th:text="${problem.notes}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div sec:authorize="isAuthenticated()">
+                <form th:action="@{/problems/downloadInputFiles/} + ${problem.id}" th:method="GET">
+                    <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
+                    <div class="form-group">
+                        <button type="submit" class="btn-round btn btn-dark btn-sm">Download input file</button>
+                    </div>
+                </form>
+                <ul>
+                    <li><small>2 tries left</small></li>
+                    <li><small>You have only 2 minutes to upload your output file</small></li>
+                </ul>
+                <form th:action="@{/problems/submitProblem/} + ${problem.id}" enctype="multipart/form-data" th:method="POST">
+                    <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
+                    <div class="form-group custom-file">
+                        <input type="file" class="custom-file-input input-sm" id="customFile" name="outputFile">
+                        <label class="custom-file-label" for="customFile">Output file</label>
+                    </div>
+                    <div class="form-group text-right" style="margin-top: 10px">
+                        <button type="submit" class="btn-round btn btn-dark btn-sm">Submit</button>
+                    </div>
+                    <ul class="text-danger" th:if="${outputFileSubmitErrors}" >
+                        <li  th:each="err: ${outputFileSubmitErrors}" th:text="${err}"></li>
+                    </ul>
+                    <div th:if="${null != submissionStatus}" th:text="${submissionStatus ? 'Accepted' : 'Wrong Answer'}" class="alert" th:classappend="'alert-' + ${submissionStatus ? 'success' : 'danger'}" role="alert">
+                        This is a primary alert—check it out!
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <footer th:replace="fragments/footer :: footer">...</footer>
+</div>
+
+<script th:src="@{../../../js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{../../../js/popper.min.js}"></script>
+<script th:src="@{../../../js/bootstrap.min.js}"></script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script"
+        th:src="@{../js/tex-mml-chtml.js}">
+</script>
+
+<script>
+$(".custom-file-input").on("change", function() {
+    const fi = document.getElementById('customFile');
+    if(fi.files.length > 1) {
+        $('#customFile').val('');
+        alert("Please select only one file");
+    } else {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    }
+});
+</script>
+</body>
+
+</html>

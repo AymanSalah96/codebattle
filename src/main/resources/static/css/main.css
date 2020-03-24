@@ -64,9 +64,13 @@ a:hover {
 }
 
 
-table {
-    text-align: center;
+.datatable th, .datatable tr, .datatable td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 0.4em;
 }
+
+
 .global-table {
     font-size: 14px;
     text-align: center;
@@ -250,4 +254,9 @@ margin-bottom: 0px;
 
 .createBtn {
     margin-bottom: 15px;
+}
+
+
+.problem-section {
+    margin-bottom: 25px;
 }

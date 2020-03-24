@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" type="text/css" th:href="@{../css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../css/flag-icon.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../css/profileSummaryCard.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../css/secondaryNav.css}">
+    <title>CodeBattle | Contest Creator</title>
+</head>
+
+<body>
+
+<header th:replace="fragments/header :: header('contests')">...</header>
+
+<div class="container">
+
+
+
+    <div class="row">
+        <div class="col-9">
+            <div th:replace="fragments/contestProblems :: contestProblems(${contest.id}, ${contest.problems})"></div>
+        </div>
+        <div class="col-3">
+            <div class="card text-center">
+                <div class="card-body" id="contestSummary">
+                    <h6 class="card-title"><a th:text="${contest.name}" th:href="@{/contests/} + ${contest.id}"></a></h6>
+                    <hr />
+                    <p class="card-text">
+                        <p th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}">
+
+                            <p  th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}" th:text="${contest.startDate}" class="contestStartDate" hidden ></p>
+                            <p  th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}" th:text="${contest.durationInMinutes}" class="contestDuration" hidden ></p>
+                            <p th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}" class="contestStartDateMoment"></p>
+                    <span th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}">
+                        <hr />
+                    Before
+                        </span>
+                    </p>
+                        <p th:if="${contest.getContestStatus().toString().equals('FINISHED')}">Finished</p>
+                        <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}">
+                            <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}" th:text="${contest.startDate}" class="contestStartDate" hidden ></p>
+                            <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}" th:text="${contest.durationInMinutes}" class="contestDuration" hidden ></p>
+                            <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}" class="contestStartDateMoment"></p>
+                    <span th:if="${contest.getContestStatus().toString().equals('RUNNING')}">
+                    <hr />
+                    Running
+                        </span>
+                    </p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer th:replace="fragments/footer :: footer">...</footer>
+</div>
+
+<script th:src="@{../js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{../js/popper.min.js}"></script>
+<script th:src="@{../js/bootstrap.min.js}"></script>
+<script th:src="@{../js/moment-with-locales.min.js}"></script>
+
+
+<script>
+function updateTime() {
+    var contestStartDate = $(".contestStartDate").html();
+    var contestDuration = $(".contestDuration").html();
+    if(contestStartDate !== undefined) {
+    var contestStartDateMoment = moment(contestStartDate.replace("T", " "));
+    var fromNow = contestStartDateMoment.fromNow();
+    if(fromNow.includes('ago')) {
+        var endTime = contestStartDateMoment.add(contestDuration, 'minutes');
+        var remainingTime = moment.duration(endTime.diff(moment()));
+            $(".contestStartDateMoment").html(remainingTime.humanize() + " remaining");
+       } else {
+        $(".contestStartDateMoment").html("Starts " + fromNow);
+       }
+
+    }
+    }
+
+    updateTime();
+
+    setInterval(function() {
+    updateTime();
+    }, 60000);
+</script>
+</body>
+
+</html>

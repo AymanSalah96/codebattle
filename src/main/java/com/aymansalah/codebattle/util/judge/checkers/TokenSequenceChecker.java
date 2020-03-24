@@ -3,7 +3,7 @@ package com.aymansalah.codebattle.util.judge.checkers;
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class TokenSequenceChecker implements Checker {
+public class TokenSequenceChecker extends Checker {
 
     private BufferedReader judgeFileReader;
     private BufferedReader participantFileReader;

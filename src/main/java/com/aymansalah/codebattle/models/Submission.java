@@ -28,8 +28,8 @@ public class Submission {
     private long sourceCodeFileId;
 
     @NotNull
-    @Column(name = "author_id")
-    private long authorId;
+    @Column(name = "author_username")
+    private String authorUsername;
 
     @NotNull
     @Column(name = "submission_time")
@@ -38,8 +38,7 @@ public class Submission {
     @NotNull
     @Column(name = "verdict")
     private String verdict;
+    
 
-    @NotNull
-    @Column(name = "submission_output_file_id")
-    private String outputFileId;
+
 }
