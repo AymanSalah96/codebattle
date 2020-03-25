@@ -81,6 +81,16 @@
                 <li><small class="form-text text-muted">Must exists at least one sample and one main test files</small></li>
             </ul>
         </div>
+        <div class="form-group">
+            <label>Checker</label>
+            <select class="form-control" th:field="*{checkerType}">
+                <option th:each="checkerOpt : ${T(com.aymansalah.codebattle.util.judge.checkers.CheckerType).values()}"
+                        th:value="${checkerOpt}"
+                        th:text="${checkerOpt.getLabel()}"
+                        th:selected="${problem.checkerType == checkerOpt}">
+                </option>
+            </select>
+        </div>
         <div class="text-right form-group">
             <button type="submit" class="btn-round btn btn-primary">Save</button>
         </div>

@@ -86,9 +86,10 @@ public class ProblemController {
             throw new AccessDeniedException("You don't have any permission to access this page");
 
         model.addAttribute("problem", problem);
-
         return "problem/details";
     }
+
+
 
 
     @PostMapping("/problems/new")
@@ -118,6 +119,7 @@ public class ProblemController {
         model.addAttribute("problemsList", problemList);
         return "problem/author";
     }
+
 
     @GetMapping("/problems/edit/{id}")
     @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
@@ -171,30 +173,6 @@ public class ProblemController {
         }
 
 
-    }
-
-    @PostMapping("/problems/submitProblem/{id}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
-    public String submitProblem(@PathVariable("id") long problemId,
-                                @RequestParam("username") String username,
-                                @RequestParam("outputFile") MultipartFile file,
-                                RedirectAttributes redirectAttributes) {
-
-
-        boolean result = submissionService.submit(problemId, username, file);
-
-        redirectAttributes.addFlashAttribute("submissionStatus", result);
-        return "redirect:/problems/{id}";
-        /*
-        // validate user
-        List<String> errors = FileUploadValidator.validateSubmitOutputFile(file);
-        if(!errors.isEmpty()) {
-            redirectAttributes.addFlashAttribute("outputFileSubmitErrors", errors);
-            return "redirect:/problems/{id}";
-        }
-
-        return "redirect:/problems/{id}";
-        */
     }
 
     @PostMapping("/problems/edit/{id}")

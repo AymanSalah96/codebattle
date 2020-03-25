@@ -1,6 +1,7 @@
 package com.aymansalah.codebattle.models;
 
 import com.aymansalah.codebattle.util.judge.SampleTest;
+import com.aymansalah.codebattle.util.judge.checkers.CheckerType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -44,8 +45,9 @@ public class Problem {
     private String description;
 
     @NotNull
-    @Column(name = "problem_checker_id")
-    private int checkerId;
+    @Column(name = "problem_checker_type")
+    @Enumerated(EnumType.STRING)
+    private CheckerType checkerType;
 
     @NotNull
     @Column(name = "problem_timer")

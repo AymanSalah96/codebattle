@@ -1,9 +1,12 @@
 package com.aymansalah.codebattle.services;
 
+import com.aymansalah.codebattle.models.Contest;
+import com.aymansalah.codebattle.models.Problem;
 import com.aymansalah.codebattle.util.judge.Helper;
 import com.aymansalah.codebattle.util.judge.SampleTest;
 import com.aymansalah.codebattle.util.judge.checkers.Checker;
 import com.aymansalah.codebattle.util.judge.checkers.LineChecker;
+import com.aymansalah.codebattle.util.judge.checkers.TokenSequenceChecker;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,16 +101,24 @@ public class FileUploadService {
         return new ArrayList<File>(Arrays.asList(new File(directory).listFiles()));
     }
 
-    public boolean saveSubmittedOutput(long problemId, String username, MultipartFile file) {
-        String submissionDirectory = SUBMISSIONS_DIRECTORY + username + "/" + problemId + "/";
+    public boolean saveSubmittedOutput(Contest contest,  Problem problem, String username, MultipartFile file) {
+        String submissionDirectory = SUBMISSIONS_DIRECTORY + username + "/" + problem.getId() + "/";
         createDirectoriesIfNotExists(submissionDirectory);
         Path path = Paths.get(submissionDirectory + file.getOriginalFilename());
         try {
             Files.write(path, file.getBytes());
-            File judgeTestFile = getMainTestOutputFileForProblemId(problemId);
+            File judgeTestFile = getMainTestOutputFileForProblemId(problem.getId());
             if(null == judgeTestFile)
                 return false;
-            Checker checker = new LineChecker();
+            Checker checker = null;
+            switch (problem.getCheckerType()) {
+                case WCMP:
+                    checker = new TokenSequenceChecker();
+                    break;
+                default:
+                    checker = new LineChecker();
+            }
+
             boolean result = checker.compare(judgeTestFile, new File(path.toString()));
             Files.deleteIfExists(path);
             return result;

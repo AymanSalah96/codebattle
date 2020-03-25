@@ -3,9 +3,11 @@ package com.aymansalah.codebattle.models;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -24,8 +26,8 @@ public class Submission {
     private long problemId;
 
     @NotNull
-    @Column(name = "source_code_file_id")
-    private long sourceCodeFileId;
+    @Column(name = "contest_id")
+    private long contestId;
 
     @NotNull
     @Column(name = "author_username")
@@ -33,7 +35,8 @@ public class Submission {
 
     @NotNull
     @Column(name = "submission_time")
-    private Date submissionTime;
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime submissionTime;
 
     @NotNull
     @Column(name = "verdict")

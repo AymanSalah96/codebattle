@@ -12,7 +12,6 @@ public class ProblemValidator {
         validateInputDescription(problem.getInputDescription(), result);
         validateOutputDescription(problem.getOutputDescription(), result);
         validateDescription(problem.getDescription(), result);
-        validateCheckerId(problem.getCheckerId(), result);
         validateTimer(problem.getTimerInSeconds(), result);
         validateCreationDate(problem.getCreationDate(), result);
         validateScore(problem.getScore(), result);
@@ -33,9 +32,6 @@ public class ProblemValidator {
     }
 
     private static void validateTimer(int timerInSeconds, BindingResult result) {
-    }
-
-    private static void validateCheckerId(int checkerId, BindingResult result) {
     }
 
     private static void validateDescription(String description, BindingResult result) {

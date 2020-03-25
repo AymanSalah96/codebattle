@@ -75,8 +75,9 @@
                     <li><small>2 tries left</small></li>
                     <li><small>You have only 2 minutes to upload your output file</small></li>
                 </ul>
-                <form th:action="@{/problems/submitProblem/} + ${problem.id}" enctype="multipart/form-data" th:method="POST">
-                    <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
+                <form th:action="@{/contests/submitProblem/}" enctype="multipart/form-data" th:method="POST">
+                    <input type="hidden" name="contestId" th:value="${contestId}">
+                    <input type="hidden" name="problemIndex" th:value="${problem.index}">
                     <div class="form-group custom-file">
                         <input type="file" class="custom-file-input input-sm" id="customFile" name="outputFile">
                         <label class="custom-file-label" for="customFile">Output file</label>
@@ -84,11 +85,12 @@
                     <div class="form-group text-right" style="margin-top: 10px">
                         <button type="submit" class="btn-round btn btn-dark btn-sm">Submit</button>
                     </div>
-                    <ul class="text-danger" th:if="${outputFileSubmitErrors}" >
-                        <li  th:each="err: ${outputFileSubmitErrors}" th:text="${err}"></li>
-                    </ul>
+                    <div th:if="${null != outputFileSubmitErrors}" th:text="${outputFileSubmitErrors}" class="alert alert-danger" role="alert">
+                    </div>
                     <div th:if="${null != submissionStatus}" th:text="${submissionStatus ? 'Accepted' : 'Wrong Answer'}" class="alert" th:classappend="'alert-' + ${submissionStatus ? 'success' : 'danger'}" role="alert">
                         This is a primary alert—check it out!
+                    </div>
+                    <div th:if="${null != submissionExceededError}" th:text="${submissionExceededError}" class="alert alert-danger" role="alert">
                     </div>
                 </form>
             </div>

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     List<Submission> findByAuthorUsernameAndProblemId(String username, long problemId);
+    int countByAuthorUsernameAndProblemIdAndContestId(String username, long problemId, long contestId);
 }

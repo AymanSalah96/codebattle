@@ -6,11 +6,6 @@ import java.util.List;
 
 public abstract class Checker {
 
-
-    private enum CheckerTypes {
-        LCMP, WCMP
-    }
-
     public abstract boolean compare(File judgeOutput, File participantOutput);
 
 }

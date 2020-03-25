@@ -5,6 +5,7 @@ import com.aymansalah.codebattle.models.Problem;
 import com.aymansalah.codebattle.models.User;
 import com.aymansalah.codebattle.services.ContestService;
 import com.aymansalah.codebattle.services.ProblemService;
+import com.aymansalah.codebattle.services.SubmissionService;
 import com.aymansalah.codebattle.services.UserService;
 import com.aymansalah.codebattle.validators.ContestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -31,6 +33,9 @@ public class ContestController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SubmissionService submissionService;
 
     @InitBinder
     public void initBinder ( WebDataBinder binder ) {
@@ -60,7 +65,9 @@ public class ContestController {
 
     @PostMapping("/contests/new")
     @PreAuthorize("isAuthenticated()")
-    public String postNewContest(@ModelAttribute("contest") Contest contest, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String postNewContest(@ModelAttribute("contest") Contest contest,
+                                 BindingResult result,
+                                 RedirectAttributes redirectAttributes) {
         ContestValidator.validate(contest, result);
         if(result.hasErrors()) {
             return "contest/new";
@@ -73,7 +80,10 @@ public class ContestController {
 
     @GetMapping("/contests/edit/{id}")
     @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
-    public String getEditContestPage(@PathVariable("id") long contestId, @RequestParam("username") String username, Model model, RedirectAttributes redirectAttributes) {
+    public String getEditContestPage(@PathVariable("id") long contestId,
+                                     @RequestParam("username") String username,
+                                     Model model,
+                                     RedirectAttributes redirectAttributes) {
         Contest contest = contestService.getById(contestId);
         if(null == contest) {
             redirectAttributes.addFlashAttribute("alert", "The requested contest not exits");
@@ -91,15 +101,19 @@ public class ContestController {
     }
 
     @GetMapping("/contests/{id}")
-    public String getContestDetailsPage(@PathVariable("id") long contestId, Model model, RedirectAttributes redirectAttributes) {
-        Contest existingContest = contestService.getById(contestId);
-        if(null == existingContest) {
-            redirectAttributes.addFlashAttribute("alert", "The requested contest not found");
+    public String getContestDetailsPage(@PathVariable("id") long contestId,
+                                        Model model,
+                                        RedirectAttributes redirectAttributes) {
+        Contest contest = contestService.getById(contestId);
+        if(null == contest) {
+            redirectAttributes.addFlashAttribute("alert", "Contest not found");
             redirectAttributes.addFlashAttribute("alertType", "primary");
             return "redirect:/contests";
         }
+        if(contest.getContestStatus() == Contest.Status.NOT_STARTED)
+            throw new AccessDeniedException("Contest not started yet");
 
-        model.addAttribute("contest", existingContest);
+        model.addAttribute("contest", contest);
         return "contest/details";
     }
 
@@ -201,14 +215,77 @@ public class ContestController {
     }
 
     @GetMapping("/contests/{id}/problems/{problemIndex}")
-    public String getProblemDetailsPage(@PathVariable("id") long contestId, @PathVariable("problemIndex") String problemIndex, Model model, RedirectAttributes redirectAttributes) {
+    public String getProblemDetailsPage(@PathVariable("id") long contestId,
+                                        @PathVariable("problemIndex") String problemIndex,
+                                        Model model,
+                                        RedirectAttributes redirectAttributes) {
+        Contest contest = contestService.getById(contestId);
+        if(null == contest) {
+            redirectAttributes.addFlashAttribute("alert", "Contest not found");
+            redirectAttributes.addFlashAttribute("alertType", "primary");
+            return "redirect:/contests";
+        }
+        if(contest.getContestStatus() == Contest.Status.NOT_STARTED)
+            throw new AccessDeniedException("Contest not started yet");
+
         Problem problem = contestService.getProblemIndexInContest(contestId, problemIndex);
         if(null == problem) {
             redirectAttributes.addFlashAttribute("alert", "Problem not found");
             redirectAttributes.addFlashAttribute("alertType", "primary");
+            return "redirect:/contests/{id}";
+        }
+
+        model.addAttribute("problem", problem);
+        model.addAttribute("contestId", contest.getId());
+        return "problem/details";
+    }
+
+    @PostMapping("/contests/submitProblem")
+    @PreAuthorize("isAuthenticated()")
+    public String submitProblem(@RequestParam("problemIndex") String problemIndex,
+                                @RequestParam("contestId") long contestId,
+                                @RequestParam("outputFile") MultipartFile file,
+                                RedirectAttributes redirectAttributes) {
+
+        if(null == file ||
+        file.getOriginalFilename().isBlank()) {
+            redirectAttributes.addFlashAttribute("outputFileSubmitErrors", "You should choose a file");
+            return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
+        }
+
+        String username = userService.getAuthenticatedUsername();
+        Contest contest = contestService.getById(contestId);
+        if(null == contest) {
+            redirectAttributes.addFlashAttribute("alert", "Contest not found");
+            redirectAttributes.addFlashAttribute("alertType", "primary");
             return "redirect:/contests";
         }
-        model.addAttribute("problem", problem);
-        return "problem/details";
+        Problem problem = contestService.getProblemIndexInContest(contestId, problemIndex);
+        boolean result = false;
+        switch (contest.getContestStatus()) {
+            case NOT_STARTED:
+                throw new AccessDeniedException("Contest not started yet");
+            case RUNNING:
+                if(null == problem) {
+                    redirectAttributes.addFlashAttribute("alert", "Problem not found");
+                    redirectAttributes.addFlashAttribute("alertType", "primary");
+                    return "redirect:/contests" + contestId;
+                }
+                int numberOfTries = submissionService.getTriesCountForProblem(contest, problem, username);
+                if(numberOfTries >= 2) {
+                    redirectAttributes.addFlashAttribute("submissionExceededError", "You don't have any tries for this problem");
+                    return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
+                }
+                result = submissionService.submit(contest, problem, username, file, true);
+                redirectAttributes.addFlashAttribute("submissionStatus", result);
+                return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
+            case FINISHED:
+                result = submissionService.submit(contest, problem, username, file, false);
+                redirectAttributes.addFlashAttribute("submissionStatus", result);
+                return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
+        }
+
+        return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
+
     }
 }

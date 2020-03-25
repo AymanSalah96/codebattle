@@ -60,11 +60,4 @@ public class FileUploadValidator {
         }
         return errors;
     }
-
-    public static List<String> validateSubmitOutputFile(MultipartFile file) {
-        List<String> errors = new ArrayList<>();
-        errors.add("Wrong Answer");
-        System.out.println(file.getContentType());
-        return errors;
-    }
 }
