@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" th:href="@{../../../css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{../../../css/flag-icon.min.css}">
+    <link rel="stylesheet" th:href="@{../../../css/main.css}">
+    <link rel="stylesheet" th:href="@{../../../css/profileSummaryCard.css}">
+    <link rel="stylesheet" th:href="@{../../../css/secondaryNav.css}">
+    <style type="text/css">
+        .cell-accepted {
+            color: #0a0;
+            font-weight: bold;
+        }
+
+        .cell-rejected {
+            color: #00a;
+        }
+
+        .cell-time {
+            font-size: 1.0rem;
+            display: block;
+        }
+
+        .contest-name {
+            font-size: 1.5em;
+            color: #445f9d;
+        }
+
+        .successfulChallengeCount {
+            color: green;
+        }
+
+        .unsuccessfulChallengeCount {
+            color: gray;
+        }
+        .verdict-accepted {
+    color: #0a0;
+    font-weight: bold;
+}
+
+.verdict-accepted-challenged {
+    color: #0a0;
+}
+
+.verdict-failed {
+    color: red;
+}
+
+.verdict-rejected {
+    color: #00a;
+}
+
+.verdict-waiting {
+    color: gray;
+}
+
+.verdict-successful-challenge {
+    font-weight: bold;
+    color: #0a0;
+}
+
+.verdict-unsuccessful-challenge {
+    color: #00a;
+}
+
+.verdict-challenged {
+    color: red;
+    font-weight: bold;
+}
+
+.status-verdict {
+    font-size: 1.1rem !important;
+}
+
+.status-problem {
+    font-size: 1.1rem !important;
+}
+
+.status-small {
+    font-size: 1.1rem !important;
+}
+    </style>
+    <title>CodeBattle | Standings</title>
+</head>
+<body>
+
+<header th:replace="fragments/header :: header('contests')">...</header>
+
+<div class="container" th:with="contestStatus = ${contest.getContestStatus().toString()}">
+
+    <div th:replace="fragments/profileSecondaryNav :: contestSecondaryNav('standings')"></div>
+
+
+    <div class="standings-header" style="margin-bottom: 1em">
+        <h5 th:text="${contest.name}" class="text-center"></h5>
+    </div>
+    <table class="table table-striped table-bordered nowrap table-sm text-center standings-table">
+        <thead>
+            <tr>
+                <th style="width:2em;">#</th>
+                <th style="text-align:left; padding-left:1em;">Participant</th>
+                <th style="width:2em;">Solved</th>
+                <th style="width:4em;">Penalty</th>
+                <th style="width:4em;" th:each="problem : ${contest.problems}">
+                    <a th:title="${problem.index} + ' - ' + ${problem.name}"
+                       th:href="@{/contests/} + ${contest.id} + '/problems/' + ${problem.index}"
+                       th:text="${problem.index}"></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="rank : ${rankList}">
+                <td th:text="${rank.rank}">1</td>
+                <td class="contestant-cell" style="text-align:left;padding-left:1em;">
+                    <a th:href="@{/profile/} + ${rank.username}" th:text="${rank.username}"></a>
+                </td>
+                <td th:text="${rank.solved}"></td>
+                <td th:text="${rank.penalty}"></td>
+
+                <td th:each="problem : ${contest.problems}">
+                    <div th:if="${rank.problemSummaryMap.containsKey(problem.index)}">
+                        <div th:if="${!rank.problemSummaryMap.get(problem.index).verdict.equalsIgnoreCase('OK')}">
+                            <span class="cell-rejected"
+                                  th:text="'-' + ${rank.problemSummaryMap.get(problem.index).triesCount}"
+                            ></span>
+                        </div>
+                        <div th:if="${rank.problemSummaryMap.get(problem.index).verdict.equalsIgnoreCase('OK')}">
+                            <span class="cell-accepted"
+                                  th:text="'+' + ${rank.problemSummaryMap.get(problem.index).triesCount > 1 ? '1' : ''}"
+                            ></span>
+                            <span class="cell-time" th:text="${rank.problemSummaryMap.get(problem.index).acTimeInSeconds / 60} + ':' + ${rank.problemSummaryMap.get(problem.index).acTimeInSeconds % 60}">00:00</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <footer th:replace="fragments/footer :: footer">...</footer>
+</div>
+
+<script th:src="@{../../../js/jquery-3.4.1.min.js}" ></script>
+<script th:src="@{../../../js/popper.min.js}" ></script>
+<script th:src="@{../../../js/bootstrap.min.js}" ></script>
+<script th:src="@{../../../js/moment-with-locales.min.js}"></script>
+<script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+<script>
+
+function updateTime() {
+    $("#contestsTable tr").each(function() {
+        var contestStartDate = $(this).find(".contestStartDate").html();
+        var contestDuration = $(this).find(".contestDuration").html();
+        if(contestStartDate !== undefined) {
+            var contestStartDateMoment = moment(contestStartDate);
+            $(this).find(".contestStartDateMoment").html(contestStartDateMoment.fromNow());
+        }
+    });
+}
+
+updateTime();
+
+setInterval(function() {
+    updateTime();
+}, 60000);
+</script>
+
+</body>
+
+</html>

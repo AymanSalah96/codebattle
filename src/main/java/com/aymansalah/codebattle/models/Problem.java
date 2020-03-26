@@ -49,10 +49,6 @@ public class Problem {
     @Enumerated(EnumType.STRING)
     private CheckerType checkerType;
 
-    @NotNull
-    @Column(name = "problem_timer")
-    private int timerInSeconds;
-
     @Column(name = "problem_creation_date")
     private Date creationDate;
 
@@ -69,10 +65,6 @@ public class Problem {
     @Column(name = "problem_creator_username")
     private String creatorUsername;
 
-    @OneToMany
-    @JoinColumn(name = "author_username")
-    private List<Submission> submissions;
-
     @Transient
     private List<File> io;
 
@@ -82,11 +74,4 @@ public class Problem {
     @Transient
     private String index;
 
-    // TODO: fix this method it's not working correctly
-    public int getACSubmissionsCount() {
-        int count = 0;
-        for(Submission submission : submissions)
-            count += submission.getVerdict().equalsIgnoreCase("OK") ? 1 : 0;
-        return count;
-    }
 }

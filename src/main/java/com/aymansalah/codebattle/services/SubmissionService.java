@@ -20,8 +20,8 @@ public class SubmissionService {
     @Autowired
     private FileUploadService fileUploadService;
 
-    public List<Submission> getSubmissionsByUsernameForProblemId(String username, long problemId) {
-        return submissionRepository.findByAuthorUsernameAndProblemId(username, problemId);
+    public List<Submission> getSubmissionsByUsernameForProblemId(String username, String problemIndex) {
+        return submissionRepository.findByAuthorUsernameAndProblemIndex(username, problemIndex);
     }
 
     public boolean submit(Contest contest, Problem problem, String username, MultipartFile file, boolean saveSubmissionToDb) {
@@ -30,7 +30,7 @@ public class SubmissionService {
             Submission submission = new Submission();
             submission.setVerdict(result ? "OK" : "WRONG");
             submission.setAuthorUsername(username);
-            submission.setProblemId(problem.getId());
+            submission.setProblemIndex(problem.getIndex());
             submission.setContestId(contest.getId());
             submission.setSubmissionTime(LocalDateTime.now());
             submissionRepository.saveAndFlush(submission);
@@ -38,7 +38,7 @@ public class SubmissionService {
         return result;
     }
 
-    public int getTriesCountForProblem(Contest contest, Problem problem, String username) {
-        return submissionRepository.countByAuthorUsernameAndProblemIdAndContestId(username, problem.getId(), contest.getId());
+    public int getTriesCountForProblem(long contestID, String problemIndex, String username) {
+        return submissionRepository.countByAuthorUsernameAndProblemIndexAndContestId(username, problemIndex, contestID);
     }
 }

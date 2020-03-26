@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="downloadSection">
+    <div class="alert alert-primary" th:if="${contestStatus.equals('RUNNING')}">
+        <span th:text="${2 - triesCount == 2 ? '2 Tries left' : 'One try left'}"></span>
+    </div>
+    <form th:action="@{/problems/downloadInputFiles/} + ${problem.id}" th:method="GET">
+        <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
+        <input type="hidden" name="contestId" th:value="${contest.id}">
+        <div class="form-group">
+            <button type="submit" class="btn-round btn btn-dark btn-sm">Download input file</button>
+        </div>
+    </form>
+    <form th:action="@{/contests/submitProblem/}" enctype="multipart/form-data" th:method="POST">
+        <input type="hidden" name="contestId" th:value="${contest.id}">
+        <input type="hidden" name="problemIndex" th:value="${problem.index}">
+        <div class="form-group custom-file">
+            <input type="file" class="custom-file-input input-sm" id="customFile" name="outputFile">
+            <label class="custom-file-label" for="customFile">Output file</label>
+        </div>
+        <div class="form-group text-right" style="margin-top: 10px">
+            <button type="submit" class="btn-round btn btn-dark btn-sm">Submit</button>
+        </div>
+        <ul th:if="${null != outputFileSubmitErrors}">
+            <li th:text="${outputFileSubmitErrors}" class="text-danger"></li>
+        </ul>
+        <div th:if="${null != submissionExceededError}" th:text="${submissionExceededError}" class="alert alert-danger" role="alert">
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

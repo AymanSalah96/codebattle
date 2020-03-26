@@ -16,46 +16,20 @@
 
 <header th:replace="fragments/header :: header('contests')">...</header>
 
-<div class="container">
+<div class="container" th:with="contestStatus = ${contest.getContestStatus().toString()}">
 
-
+    <div th:replace="fragments/profileSecondaryNav :: contestSecondaryNav('problems')"></div>
 
     <div class="row">
-        <div class="col-9">
+        <div class="col-8">
             <div th:replace="fragments/contestProblems :: contestProblems(${contest.id}, ${contest.problems})"></div>
         </div>
-        <div class="col-3">
-            <div class="card text-center">
-                <div class="card-body" id="contestSummary">
-                    <h6 class="card-title"><a th:text="${contest.name}" th:href="@{/contests/} + ${contest.id}"></a></h6>
-                    <hr />
-                    <p class="card-text">
-                        <p th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}">
+        <div class="col-4">
+            <div th:replace="fragments/contestFragments :: contestStatusFragment">
 
-                            <p  th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}" th:text="${contest.startDate}" class="contestStartDate" hidden ></p>
-                            <p  th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}" th:text="${contest.durationInMinutes}" class="contestDuration" hidden ></p>
-                            <p th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}" class="contestStartDateMoment"></p>
-                    <span th:if="${contest.getContestStatus().toString().equals('NOT_STARTED')}">
-                        <hr />
-                    Before
-                        </span>
-                    </p>
-                        <p th:if="${contest.getContestStatus().toString().equals('FINISHED')}">Finished</p>
-                        <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}">
-                            <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}" th:text="${contest.startDate}" class="contestStartDate" hidden ></p>
-                            <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}" th:text="${contest.durationInMinutes}" class="contestDuration" hidden ></p>
-                            <p th:if="${contest.getContestStatus().toString().equals('RUNNING')}" class="contestStartDateMoment"></p>
-                    <span th:if="${contest.getContestStatus().toString().equals('RUNNING')}">
-                    <hr />
-                    Running
-                        </span>
-                    </p>
-                    </p>
-                </div>
             </div>
         </div>
     </div>
-
 
     <footer th:replace="fragments/footer :: footer">...</footer>
 </div>
@@ -65,31 +39,43 @@
 <script th:src="@{../js/bootstrap.min.js}"></script>
 <script th:src="@{../js/moment-with-locales.min.js}"></script>
 
-
 <script>
-function updateTime() {
-    var contestStartDate = $(".contestStartDate").html();
-    var contestDuration = $(".contestDuration").html();
-    if(contestStartDate !== undefined) {
-    var contestStartDateMoment = moment(contestStartDate.replace("T", " "));
-    var fromNow = contestStartDateMoment.fromNow();
-    if(fromNow.includes('ago')) {
-        var endTime = contestStartDateMoment.add(contestDuration, 'minutes');
-        var remainingTime = moment.duration(endTime.diff(moment()));
-            $(".contestStartDateMoment").html(remainingTime.humanize() + " remaining");
-       } else {
-        $(".contestStartDateMoment").html("Starts " + fromNow);
-       }
+function format(num) {
+    var s = String(num);
+    if(s.length < 2) s = "0" + s;
+    return s;
+}
+        function updateTime() {
+            var contestStartDate = $(".contestStartDate").html();
+            var contestDurationInSeconds = $(".contestDuration").html() * 60;
+            var now = moment();
+            if (contestStartDate !== undefined) {
+                var contestMoment = moment(contestStartDate.replace("T", " "));
+                var contestTimeInSeconds = contestMoment.seconds() + contestMoment.minutes() * 60 + contestMoment.hours() * 60 * 60;
+                var contestEndTimeInSeconds = contestTimeInSeconds + contestDurationInSeconds;
+                var nowTimeInSeconds = now.seconds() + now.minutes() * 60 + now.hours() * 60 * 60;
+                if (nowTimeInSeconds <= contestEndTimeInSeconds) { // before or running
+                    var remainingTimeInSeconds
+                    if (nowTimeInSeconds >= contestTimeInSeconds) { // Contest is running
+                        remainingTimeInSeconds = contestEndTimeInSeconds - nowTimeInSeconds;
+                    } else if (nowTimeInSeconds < contestTimeInSeconds) { // not started
+                        remainingTimeInSeconds = contestTimeInSeconds - nowTimeInSeconds;
+                    }
+                    var hh = Math.floor(remainingTimeInSeconds / 3600);
+                    remainingTimeInSeconds %= 3600;
+                    var mm = Math.floor(remainingTimeInSeconds / 60);
+                    var ss = remainingTimeInSeconds % 60;
+                    $(".contestStartDateMoment").html(format(hh) + ":" + format(mm) + ":" + format(ss));
+                }
+            }
+        }
 
-    }
-    }
+        updateTime();
 
-    updateTime();
-
-    setInterval(function() {
-    updateTime();
-    }, 60000);
-</script>
+        setInterval(function() {
+            updateTime();
+        }, 1000);
+    </script>
 </body>
 
 </html>

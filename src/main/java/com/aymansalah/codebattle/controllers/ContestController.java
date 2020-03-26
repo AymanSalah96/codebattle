@@ -2,11 +2,10 @@ package com.aymansalah.codebattle.controllers;
 
 import com.aymansalah.codebattle.models.Contest;
 import com.aymansalah.codebattle.models.Problem;
+import com.aymansalah.codebattle.models.Submission;
 import com.aymansalah.codebattle.models.User;
-import com.aymansalah.codebattle.services.ContestService;
-import com.aymansalah.codebattle.services.ProblemService;
-import com.aymansalah.codebattle.services.SubmissionService;
-import com.aymansalah.codebattle.services.UserService;
+import com.aymansalah.codebattle.services.*;
+import com.aymansalah.codebattle.util.RankRecord;
 import com.aymansalah.codebattle.validators.ContestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -36,6 +35,9 @@ public class ContestController {
 
     @Autowired
     private SubmissionService submissionService;
+
+    @Autowired
+    private StandingService standingService;
 
     @InitBinder
     public void initBinder ( WebDataBinder binder ) {
@@ -112,7 +114,6 @@ public class ContestController {
         }
         if(contest.getContestStatus() == Contest.Status.NOT_STARTED)
             throw new AccessDeniedException("Contest not started yet");
-
         model.addAttribute("contest", contest);
         return "contest/details";
     }
@@ -236,7 +237,7 @@ public class ContestController {
         }
 
         model.addAttribute("problem", problem);
-        model.addAttribute("contestId", contest.getId());
+        model.addAttribute("contest", contest);
         return "problem/details";
     }
 
@@ -271,7 +272,7 @@ public class ContestController {
                     redirectAttributes.addFlashAttribute("alertType", "primary");
                     return "redirect:/contests" + contestId;
                 }
-                int numberOfTries = submissionService.getTriesCountForProblem(contest, problem, username);
+                int numberOfTries = submissionService.getTriesCountForProblem(contest.getId(), problem.getIndex(), username);
                 if(numberOfTries >= 2) {
                     redirectAttributes.addFlashAttribute("submissionExceededError", "You don't have any tries for this problem");
                     return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
@@ -287,5 +288,25 @@ public class ContestController {
 
         return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
 
+    }
+
+    @GetMapping("/contests/{id}/standings")
+    public String getContestStandingPage(@PathVariable("id") long contestId,
+                                         Model model,
+                                         RedirectAttributes redirectAttributes) {
+        Contest contest = contestService.getById(contestId);
+        if(null == contest) {
+            redirectAttributes.addFlashAttribute("alert", "Contest not found");
+            redirectAttributes.addFlashAttribute("alertType", "primary");
+            return "redirect:/contests/{id}";
+        }
+        if(!contest.getContestStatus().equals(Contest.Status.FINISHED))
+            throw new AccessDeniedException("Standing will be available when contest ends");
+
+        List<RankRecord> rankList = standingService.getContestStanding(contestId);
+
+        model.addAttribute("contest", contest);
+        model.addAttribute("rankList", rankList);
+        return "contest/standings";
     }
 }

@@ -35,7 +35,6 @@
             <th>#</th>
             <th>Name</th>
             <th>Editorial</th>
-            <th>Solved</th>
         </tr>
         </thead>
         <tbody>
@@ -43,7 +42,6 @@
             <td th:text="${iter.count}"></td>
             <td><a  th:text="${problem.name}" th:href="@{/problems/} + ${problem.id}"></a></td>
             <td><a th:if="${problem.tutorial}" th:href="@{/tutorials/} + ${problem.id}"><i class="fas fa-file-alt"></i></a></td>
-            <td><a th:text="${problem.getACSubmissionsCount()}" th:href="@{/problems/} + ${problem.id} + '/submissions'"></a></td>
         </tr>
         </tbody>
     </table>

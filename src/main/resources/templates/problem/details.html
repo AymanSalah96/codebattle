@@ -17,10 +17,13 @@
 
 <header th:replace="fragments/header :: header('problems')">...</header>
 
-<div class="container">
+<div class="container" th:with="contestStatus = ${contest.getContestStatus().toString()}">
+
+    <div th:replace="fragments/profileSecondaryNav :: contestSecondaryNav('problems')"></div>
+
 
     <div class="row">
-        <div class="col-9">
+        <div class="col-8">
             <div class="problem-statement">
                 <div class="problem-section problem-header">
                     <h5 th:text="${problem.index != null ? problem.index + '. ' : ''} + ${problem.name}" class="text-center font-weight-bold"></h5>
@@ -63,36 +66,29 @@
                 </div>
             </div>
         </div>
-        <div class="col-3">
-            <div sec:authorize="isAuthenticated()">
-                <form th:action="@{/problems/downloadInputFiles/} + ${problem.id}" th:method="GET">
-                    <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
-                    <div class="form-group">
-                        <button type="submit" class="btn-round btn btn-dark btn-sm">Download input file</button>
+        <div class="col-4">
+            <div th:replace="fragments/contestFragments :: contestStatusFragment">
+
+            </div>
+
+            <div sec:authorize="isAuthenticated()" th:with="triesCount = ${@submissionService.getTriesCountForProblem(contest.id, problem.index, #authentication.getPrincipal().getUsername())}, isSolved=${contest.isUserSolvedProblem(#authentication.getPrincipal().getUsername(), problem.index)}">
+                <div th:if="${isSolved}" class="alert alert-success">
+                    Solved
+                </div>
+                <div th:if="${contestStatus.equals('RUNNING') and !isSolved}">
+                    <div th:if="${triesCount < 2}">
+                        <div th:replace="fragments/problemDownloadAndSubmitForm :: downloadSection"></div>
                     </div>
-                </form>
-                <ul>
-                    <li><small>2 tries left</small></li>
-                    <li><small>You have only 2 minutes to upload your output file</small></li>
-                </ul>
-                <form th:action="@{/contests/submitProblem/}" enctype="multipart/form-data" th:method="POST">
-                    <input type="hidden" name="contestId" th:value="${contestId}">
-                    <input type="hidden" name="problemIndex" th:value="${problem.index}">
-                    <div class="form-group custom-file">
-                        <input type="file" class="custom-file-input input-sm" id="customFile" name="outputFile">
-                        <label class="custom-file-label" for="customFile">Output file</label>
+                    <div th:if="${triesCount >= 2}">
+                        <div class="alert alert-primary">You finished your tries to submit this problem</div>
                     </div>
-                    <div class="form-group text-right" style="margin-top: 10px">
-                        <button type="submit" class="btn-round btn btn-dark btn-sm">Submit</button>
-                    </div>
-                    <div th:if="${null != outputFileSubmitErrors}" th:text="${outputFileSubmitErrors}" class="alert alert-danger" role="alert">
-                    </div>
-                    <div th:if="${null != submissionStatus}" th:text="${submissionStatus ? 'Accepted' : 'Wrong Answer'}" class="alert" th:classappend="'alert-' + ${submissionStatus ? 'success' : 'danger'}" role="alert">
-                        This is a primary alert—check it out!
-                    </div>
-                    <div th:if="${null != submissionExceededError}" th:text="${submissionExceededError}" class="alert alert-danger" role="alert">
-                    </div>
-                </form>
+                </div>
+                <div th:if="${contestStatus.equals('FINISHED')}">
+                    <div th:replace="fragments/problemDownloadAndSubmitForm :: downloadSection"></div>
+                </div>
+                <div th:if="${null != submissionStatus}" th:text="${submissionStatus ? 'Accepted' : 'Wrong Answer'}" class="alert" th:classappend="'alert-' + ${submissionStatus ? 'success' : 'danger'}" role="alert">
+                    This is a primary alert—check it out!
+                </div>
             </div>
         </div>
     </div>
@@ -107,8 +103,10 @@
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script"
-        th:src="@{../js/tex-mml-chtml.js}">
+        th:src="@{../../../js/tex-mml-chtml.js}">
 </script>
+<script th:src="@{../../../js/moment-with-locales.min.js}"></script>
+
 
 <script>
 $(".custom-file-input").on("change", function() {
@@ -121,6 +119,43 @@ $(".custom-file-input").on("change", function() {
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     }
 });
+
+function format(num) {
+    var s = String(num);
+    if(s.length < 2) s = "0" + s;
+    return s;
+}
+
+function updateTime() {
+    var contestStartDate = $(".contestStartDate").html();
+    var contestDurationInSeconds = $(".contestDuration").html() * 60;
+    var now = moment();
+    if (contestStartDate !== undefined) {
+        var contestMoment = moment(contestStartDate.replace("T", " "));
+        var contestTimeInSeconds = contestMoment.seconds() + contestMoment.minutes() * 60 + contestMoment.hours() * 60 * 60;
+        var contestEndTimeInSeconds = contestTimeInSeconds + contestDurationInSeconds;
+        var nowTimeInSeconds = now.seconds() + now.minutes() * 60 + now.hours() * 60 * 60;
+        if (nowTimeInSeconds <= contestEndTimeInSeconds) { // before or running
+            var remainingTimeInSeconds
+            if (nowTimeInSeconds >= contestTimeInSeconds) { // Contest is running
+                remainingTimeInSeconds = contestEndTimeInSeconds - nowTimeInSeconds;
+            } else if (nowTimeInSeconds < contestTimeInSeconds) { // not started
+                remainingTimeInSeconds = contestTimeInSeconds - nowTimeInSeconds;
+            }
+            var hh = Math.floor(remainingTimeInSeconds / 3600);
+            remainingTimeInSeconds %= 3600;
+            var mm = Math.floor(remainingTimeInSeconds / 60);
+            var ss = remainingTimeInSeconds % 60;
+            $(".contestStartDateMoment").html(format(hh) + ":" + format(mm) + ":" + format(ss));
+        }
+    }
+}
+
+updateTime();
+
+setInterval(function() {
+    updateTime();
+}, 1000);
 </script>
 </body>
 

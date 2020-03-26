@@ -32,25 +32,44 @@
     <table id="contestsTable" class="table table-striped table-bordered nowrap table-sm datatable" th:if="${contestsList!=null and !contestsList.isEmpty()}">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Creator</th>
-            <th scope="col">Start</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Countdown</th>
-            <th scope="col">Registered</th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Creator</th>
+            <th>Start</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Registered</th>
         </tr>
         </thead>
         <tbody>
-        <tr class="table-row " th:each="contest,iter : ${contestsList}">
-            <th style="width:2em" scope="row" th:text="${iter.count}"></th>
-            <td style="width:20em"><a th:text="${contest.name}" th:href="@{/contests/} + ${contest.id}"></a></td>
+        <tr class="table-row " th:each="contest,iter : ${contestsList}" th:with="contestStatus = ${contest.getContestStatus().toString()}">
+            <td style="width:2em" th:text="${iter.count}" class="rowIndex"></td>
+            <td style="width:20em">
+                <span th:if="${contestStatus.equals('NOT_STARTED')}" th:text="${contest.name}"></span>
+                <a th:if="${!contestStatus.equals('NOT_STARTED')}" th:text="${contest.name}" th:href="@{/contests/} + ${contest.id}"></a>
+            </td>
             <td style="width:10em"><a th:text="${contest.creatorUsername}" th:href="@{/profile/} + ${contest.creatorUsername}"></a></td>
             <td style="width:5em">
                 <span class="contestStartDate" th:text="${contest.getStartDateFormatted()}"></span>
             </td>
-            <td style="width:4em" class="contestDuration" th:text="${contest.durationInMinutes}"></td>
-            <td style="width:6em">Starts <span class="contestStartDateMoment"></span></td>
+            <td style="width:4em" th:text="${T(java.lang.String).format('%02d', contest.durationInMinutes / 60)} + ':' + ${T(java.lang.String).format('%02d', contest.durationInMinutes % 60)}">
+                <input type="hidden" class="durationInMinutes" th:value="${contest.durationInMinutes}">
+            </td>
+            <td style="width:6em">
+                <div th:if="${contestStatus.equals('FINISHED')}">
+                    Finished
+                </div>
+                <div th:if="${contestStatus.equals('RUNNING')}">
+                    <span class="contestStartDateMoment" th:text="${contest.durationInMinutes}"></span>
+                    <br />
+                    <span class="contestStatusDescription">Running</span>
+                </div>
+                <div th:if="${contestStatus.equals('NOT_STARTED')}">
+                    <span class="contestStartDateMoment" th:text="${contest.durationInMinutes}"></span>
+                    <br />
+                    <span class="contestStatusDescription">Before</span>
+                </div>
+            </td>
             <td style="width:4em">
                 <span><a th:text="'x' + ${contest.participants.size()}" th:href="@{/contestants/} + ${contest.id} + '/participants'"></a></span>
                 <form sec:authorize="isAuthenticated()"  th:if="${!@contestService.isRegisteredInContest(contest.id, #authentication.getPrincipal().getUsername())}" th:action="@{/contests/} + ${contest.id} + '/register'" th:method="POST">
@@ -69,17 +88,47 @@
 <script th:src="@{../js/bootstrap.min.js}" ></script>
 <script th:src="@{../js/moment-with-locales.min.js}"></script>
 <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-
 <script>
+
+var contestsDurations = {};
+
+function format(num) {
+    var s = String(num);
+    if(s.length < 2) s = "0" + s;
+    return s;
+}
 
 function updateTime() {
     $("#contestsTable tr").each(function() {
         var contestStartDate = $(this).find(".contestStartDate").html();
-        var contestDuration = $(this).find(".contestDuration").html();
-        if(contestStartDate !== undefined) {
-            var contestStartDateMoment = moment(contestStartDate);
-            $(this).find(".contestStartDateMoment").html(contestStartDateMoment.fromNow());
+        var rowIndex = $(this).find(".rowIndex").html();
+        if(contestsDurations[rowIndex] === undefined) {
+            contestsDurations[rowIndex] = $(this).find( ".contestStartDateMoment" ).html() * 60;
         }
+        var contestDurationInSeconds = contestsDurations[rowIndex];
+        var now = moment();
+        if(contestStartDate !== undefined) {
+            var contestMoment = moment(contestStartDate);
+            var contestTimeInSeconds = contestMoment.seconds() + contestMoment.minutes() * 60 + contestMoment.hours() * 60 * 60;
+            var contestEndTimeInSeconds = contestTimeInSeconds + contestDurationInSeconds;
+            var nowTimeInSeconds = now.seconds() + now.minutes() * 60 + now.hours() * 60 * 60;
+            if(nowTimeInSeconds <= contestEndTimeInSeconds) { // before or running
+                var remainingTimeInSeconds;
+                if(nowTimeInSeconds >= contestTimeInSeconds) { // Contest is running
+                    remainingTimeInSeconds = contestEndTimeInSeconds - nowTimeInSeconds;
+                     $(this).find(".contestStatusDescription").html("Running");
+                } else if(nowTimeInSeconds < contestTimeInSeconds) { // not started
+                    remainingTimeInSeconds = contestTimeInSeconds - nowTimeInSeconds;
+                    $(this).find(".contestStatusDescription").html("Before");
+                }
+                var hh = Math.floor(remainingTimeInSeconds / 3600);
+                remainingTimeInSeconds %= 3600;
+                var mm = Math.floor(remainingTimeInSeconds / 60);
+                var ss = remainingTimeInSeconds % 60;
+                $(this).find(".contestStartDateMoment").html(format(hh) + ":" + format(mm) + ":" + format(ss));
+            }
+        }
+
     });
 }
 
@@ -87,9 +136,8 @@ updateTime();
 
 setInterval(function() {
     updateTime();
-}, 60000);
+}, 1000);
 </script>
-
 </body>
 
 </html>

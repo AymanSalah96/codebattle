@@ -13,7 +13,7 @@ a:hover {
     text-decoration: none;
 }
 .navbar {
-    margin-bottom: 30px;
+    margin-bottom: 1.5em;
 }
 
 .avatar {
@@ -68,6 +68,10 @@ a:hover {
     text-align: center !important;
     vertical-align: middle !important;
     padding: 0.4em;
+}
+
+.standings-table th, .standings-table tr, .standings-table td {
+    vertical-align: middle !important;
 }
 
 
@@ -260,3 +264,20 @@ margin-bottom: 0px;
 .problem-section {
     margin-bottom: 25px;
 }
+
+#contestSummary hr {
+    margin: 0.5em 0;
+}
+#contestSummary p {
+    margin: 0;
+}
+
+#contestSummary .card-body {
+padding: 0.5em;
+font-weight: bold;
+}
+
+#contestSummary .card-title {
+font-weight: bold;
+}
+

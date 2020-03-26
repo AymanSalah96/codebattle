@@ -1,12 +1,21 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
-<div th:fragment="profileSecondaryNav(current)" class="secondary-nav">
+<div th:fragment="profileSecondaryNav(current)" class="secondary-nav text-center">
     <ul class="secondary-nav-list">
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'profile' ? 'active' : ''" th:href="@{'/profile/' + ${user.username}}">Profile</a></li>
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'submissions' ? 'active' : ''" th:href="@{'/submissions/' + ${user.username}}">Submissions</a></li>
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'contests' ? 'active' : ''" th:href="@{'/contests/' + ${user.username}}">Contests</a></li>
         <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'edit' ? 'active' : ''" th:href="@{'/edit/' + ${user.username}}" sec:authorize="isAuthenticated()" th:if="${#authentication.getPrincipal().getUsername()} == ${user.username}">Edit Profile</a></li>
+    </ul>
+</div>
+
+
+<div th:fragment="contestSecondaryNav(current)" class="secondary-nav">
+    <ul class="secondary-nav-list">
+        <li class="nav-item"><a class="nav-link" th:classappend="${current} == 'problems' ? 'active' : ''" th:href="@{'/contests/' + ${contest.id}}">Problems</a></li>
+        <li class="nav-item"><a class="nav-link" th:if="${contestStatus.equals('FINISHED')}" th:classappend="${current} == 'tutorials' ? 'active' : ''" th:href="@{'/contests/' + ${contest.id} + '/tutorials'}">Tutorials</a></li>
+        <li class="nav-item"><a class="nav-link" th:if="${contestStatus.equals('FINISHED')}" th:classappend="${current} == 'standings' ? 'active' : ''" th:href="@{'/contests/' + ${contest.id}} + '/standings'">Standings</a></li>
     </ul>
 </div>
 </body>

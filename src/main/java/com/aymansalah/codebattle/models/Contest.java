@@ -3,14 +3,15 @@ package com.aymansalah.codebattle.models;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.tomcat.jni.Local;
+import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.Transient;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Getter
@@ -51,13 +52,43 @@ public class Contest {
     )
     private List<Problem> problems;
 
+
+    @OneToMany(cascade = { CascadeType.ALL })
+    @JoinColumn(name = "contest_id")
+    private List<Submission> submissions;
+
     @OneToMany
     @JoinColumn(name = "contest_id")
     private List<ContestParticipants> participants;
 
-    @Transient
     public enum Status {
         RUNNING, FINISHED, NOT_STARTED
+    }
+
+    @Transient
+    private HashMap<String, Integer> problemSolvedCountMap;
+
+    @Transient
+    private HashSet<Pair<String, String>> userSolvedProblemPairSet;
+
+    @PostLoad
+    public void updateProblemSolvedCountMap() {
+        problemSolvedCountMap = new HashMap<>();
+        userSolvedProblemPairSet = new HashSet<>();
+        for(Submission submission : submissions) {
+            if(submission.getVerdict().equalsIgnoreCase("OK")) {
+                String username = submission.getAuthorUsername();
+                String problemIndex = submission.getProblemIndex();
+                if(!userSolvedProblemPairSet.contains(Pair.of(username, problemIndex))) {
+                    problemSolvedCountMap.put(submission.getProblemIndex(), problemSolvedCountMap.getOrDefault(submission.getProblemIndex(), 0) + 1);
+                }
+                userSolvedProblemPairSet.add(Pair.of(username, problemIndex));
+            }
+        }
+    }
+
+    public boolean isUserSolvedProblem(String username, String problemIndex) {
+        return userSolvedProblemPairSet.contains(Pair.of(username, problemIndex));
     }
 
     public Status getContestStatus() {
@@ -72,5 +103,9 @@ public class Contest {
 
     public String getStartDateFormatted() {
         return startDate.format(DateTimeFormatter.ofPattern("LLL/dd/yyyy HH:mm"));
+    }
+
+    public int getProblemSolvedCount(String problemIndex) {
+        return problemSolvedCountMap.getOrDefault(problemIndex, 0);
     }
 }

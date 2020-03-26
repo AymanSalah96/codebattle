@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
-    List<Submission> findByAuthorUsernameAndProblemId(String username, long problemId);
-    int countByAuthorUsernameAndProblemIdAndContestId(String username, long problemId, long contestId);
+    List<Submission> findByAuthorUsernameAndProblemIndex(String username, String problemIndex);
+    int countByAuthorUsernameAndProblemIndexAndContestId(String username, String problemIndex, long contestId);
+    List<Submission> findByContestId(long contestId);
 }

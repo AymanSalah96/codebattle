@@ -1,23 +1,19 @@
 package com.aymansalah.codebattle.controllers;
 
+import com.aymansalah.codebattle.models.Contest;
 import com.aymansalah.codebattle.models.Problem;
-import com.aymansalah.codebattle.models.Submission;
-import com.aymansalah.codebattle.services.*;
+import com.aymansalah.codebattle.services.ContestService;
+import com.aymansalah.codebattle.services.ProblemService;
+import com.aymansalah.codebattle.services.SubmissionService;
+import com.aymansalah.codebattle.services.UserService;
 import com.aymansalah.codebattle.util.judge.Helper;
-import com.aymansalah.codebattle.util.judge.checkers.Checker;
-import com.aymansalah.codebattle.util.judge.checkers.LineChecker;
 import com.aymansalah.codebattle.validators.FileUploadValidator;
 import com.aymansalah.codebattle.validators.ProblemValidator;
+import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,13 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -54,6 +46,7 @@ public class ProblemController {
     @InitBinder
     public void initBinder ( WebDataBinder binder ) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+
     }
 
     @GetMapping("/problems")
@@ -145,13 +138,20 @@ public class ProblemController {
     @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
     public void getInputFiles(@PathVariable("id") long problemId,
                                 @RequestParam("username") String username,
+                                @RequestParam("contestId") long contestId,
                                 HttpServletResponse response,
                                 RedirectAttributes redirectAttributes) {
         Problem problem = problemService.getProblemById(problemId);
         if(null == problem)
             return;
+        Contest contest = contestService.getById(contestId);
 
-        // TODO: handle premessions if the contest is running .....
+        if(null == contest)
+            return;
+
+
+        if(contest.getContestStatus() == Contest.Status.NOT_STARTED)
+            throw new AccessDeniedException("Contest not started yet");
 
         Path file = problemService.getMainInputTestFile(problem);
         if(null == file || !Files.exists(file)) {
@@ -159,7 +159,7 @@ public class ProblemController {
         }
 
         response.setContentType("text/plain");
-        String fileName = new String();
+        String fileName;
         if(problem.getIndex() == null)
             fileName = problem.getName();
         else

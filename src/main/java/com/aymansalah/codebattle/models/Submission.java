@@ -22,8 +22,8 @@ public class Submission {
     private long id;
 
     @NotNull
-    @Column(name = "problem_id")
-    private long problemId;
+    @Column(name = "problem_index")
+    private String problemIndex;
 
     @NotNull
     @Column(name = "contest_id")
@@ -41,7 +41,7 @@ public class Submission {
     @NotNull
     @Column(name = "verdict")
     private String verdict;
-    
+
 
 
 }
