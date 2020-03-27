@@ -22,8 +22,11 @@
             th:each="problem : ${problemsList}"
             th:with="isSolved=${@userService.getAuthenticatedUsername().equalsIgnoreCase('anonymousUser') ? false : contest.isUserSolvedProblem(#authentication.getPrincipal().getUsername(), problem.index)}"
             >
-            <td th:class="${isSolved ? 'alert-success' : ''}"><a th:text="${problem.index}" th:href="@{/contests/} + ${contestId} + '/problems/' + ${problem.index}"></a></td>
-            <td style="text-align: left !important; padding-left:1em;"><a th:text="${problem.name}" th:href="@{/contests/} + ${contestId} + '/problems/' + ${problem.index}"></a></td>
+            <td><a th:text="${problem.index}" th:href="@{/contests/} + ${contestId} + '/problems/' + ${problem.index}"></a></td>
+            <td style="text-align: left !important; padding-left:1em;">
+                <a th:text="${problem.name}" th:href="@{/contests/} + ${contestId} + '/problems/' + ${problem.index}"></a>
+                <span th:if="${isSolved}" class="text-success" style="float:right; margin-right: 1px"><i class="fas fa-check" title="Accepted"></i></span>
+            </td>
             <td th:text="${contest.getProblemSolvedCount(problem.index) > 0 ? 'x' + contest.getProblemSolvedCount(problem.index) : ''}" title="Accepted count"></td>
         </tr>
         </tbody>

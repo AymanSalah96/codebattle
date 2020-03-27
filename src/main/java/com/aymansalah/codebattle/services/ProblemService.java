@@ -66,11 +66,7 @@ public class ProblemService {
     public void editProblem(Problem problem, MultipartFile[] ioFiles) {
         Problem createdProblem = this.problemRepository.saveAndFlush(problem);
         if(ioFiles.length > 0 && !ioFiles[0].getOriginalFilename().isEmpty()) {
-            try {
-                fileUploadService.saveIOFilesForProblemId(createdProblem.getId(), ioFiles);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            fileUploadService.updateProblemFiles(createdProblem.getId(), ioFiles);
         }
     }
 }

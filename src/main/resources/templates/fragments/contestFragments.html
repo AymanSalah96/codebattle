@@ -30,5 +30,27 @@
         </div>
     </div>
 </div>
+
+
+<div th:fragment="submitSection">
+    <div th:if="${isSolved}" class="alert alert-success">
+        Solved
+    </div>
+    <div th:if="${contestStatus.equals('RUNNING') and !isSolved}">
+        <div th:if="${triesCount < 2}">
+            <div th:replace="fragments/problemDownloadAndSubmitForm :: downloadSection"></div>
+        </div>
+        <div th:if="${triesCount >= 2}">
+            <div class="alert alert-primary">You finished your tries to submit this problem</div>
+        </div>
+    </div>
+    <div th:if="${contestStatus.equals('FINISHED')}">
+        <div th:replace="fragments/problemDownloadAndSubmitForm :: downloadSection"></div>
+    </div>
+    <div th:if="${null != submissionStatus}" th:text="${submissionStatus ? 'Accepted' : 'Wrong Answer'}" class="alert" th:classappend="'alert-' + ${submissionStatus ? 'success' : 'danger'}" role="alert">
+        This is a primary alert—check it out!
+    </div>
+</div>
+
 </body>
 </html>

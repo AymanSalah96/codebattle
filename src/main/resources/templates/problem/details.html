@@ -71,25 +71,28 @@
 
             </div>
 
-            <div sec:authorize="isAuthenticated()" th:with="triesCount = ${@submissionService.getTriesCountForProblem(contest.id, problem.index, #authentication.getPrincipal().getUsername())}, isSolved=${contest.isUserSolvedProblem(#authentication.getPrincipal().getUsername(), problem.index)}">
-                <div th:if="${isSolved}" class="alert alert-success">
-                    Solved
-                </div>
-                <div th:if="${contestStatus.equals('RUNNING') and !isSolved}">
-                    <div th:if="${triesCount < 2}">
-                        <div th:replace="fragments/problemDownloadAndSubmitForm :: downloadSection"></div>
-                    </div>
-                    <div th:if="${triesCount >= 2}">
-                        <div class="alert alert-primary">You finished your tries to submit this problem</div>
-                    </div>
-                </div>
+            <div sec:authorize="isAuthenticated()">
                 <div th:if="${contestStatus.equals('FINISHED')}">
-                    <div th:replace="fragments/problemDownloadAndSubmitForm :: downloadSection"></div>
+                    <div  th:with="isSolved=${contest.isUserSolvedProblem(#authentication.getPrincipal().getUsername(), problem.index)}">
+                        <div th:replace="fragments/contestFragments :: submitSection"></div>
+                    </div>
                 </div>
-                <div th:if="${null != submissionStatus}" th:text="${submissionStatus ? 'Accepted' : 'Wrong Answer'}" class="alert" th:classappend="'alert-' + ${submissionStatus ? 'success' : 'danger'}" role="alert">
-                    This is a primary alert—check it out!
+                <div th:if="${contestStatus.equals('RUNNING')}">
+                    <div th:with="isRegistered= ${@contestService.isRegisteredInContest(contest.id, #authentication.getPrincipal().getUsername())}">
+                        <div th:if="${isRegistered}">
+                            <div  th:with="triesCount = ${@submissionService.getTriesCountForProblem(contest.id, problem.index, #authentication.getPrincipal().getUsername())}, isSolved=${contest.isUserSolvedProblem(#authentication.getPrincipal().getUsername(), problem.index)}">
+                                <div th:replace="fragments/contestFragments :: submitSection"></div>
+                            </div>
+                        </div>
+                        <div th:if="${!isRegistered}">
+                            <div class="alert alert-warning">
+                                Please register in the contest first to be able to submit this problem
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 

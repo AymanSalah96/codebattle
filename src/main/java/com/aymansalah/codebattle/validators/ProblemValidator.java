@@ -13,7 +13,6 @@ public class ProblemValidator {
         validateOutputDescription(problem.getOutputDescription(), result);
         validateDescription(problem.getDescription(), result);
         validateCreationDate(problem.getCreationDate(), result);
-        validateScore(problem.getScore(), result);
         validateNotes(problem.getNotes(), result);
         validateTutorial(problem.getTutorial(), result);
     }
@@ -22,11 +21,6 @@ public class ProblemValidator {
     }
 
     private static void validateNotes(String notes, BindingResult result) {
-    }
-
-    private static void validateScore(int score, BindingResult result) {
-        if(score < 10)
-            result.rejectValue("score", null,"Score should be at least 10");
     }
 
     private static void validateCreationDate(Date creationDate, BindingResult result) {

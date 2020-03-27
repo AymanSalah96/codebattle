@@ -98,6 +98,7 @@
     <div class="standings-header" style="margin-bottom: 1em">
         <h5 th:text="${contest.name}" class="text-center"></h5>
     </div>
+
     <table class="table table-striped table-bordered nowrap table-sm text-center standings-table">
         <thead>
             <tr>
@@ -138,6 +139,12 @@
                 </td>
             </tr>
         </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="4"></td>
+            <td th:each="problem : ${contest.problems}" th:text="${contest.getProblemSolvedCount(problem.index)}" th:title="'Total accepted for problem ' + ${problem.index}"></td>
+        </tr>
+        </tfoot>
     </table>
 
 
@@ -149,26 +156,6 @@
 <script th:src="@{../../../js/bootstrap.min.js}" ></script>
 <script th:src="@{../../../js/moment-with-locales.min.js}"></script>
 <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-
-<script>
-
-function updateTime() {
-    $("#contestsTable tr").each(function() {
-        var contestStartDate = $(this).find(".contestStartDate").html();
-        var contestDuration = $(this).find(".contestDuration").html();
-        if(contestStartDate !== undefined) {
-            var contestStartDateMoment = moment(contestStartDate);
-            $(this).find(".contestStartDateMoment").html(contestStartDateMoment.fromNow());
-        }
-    });
-}
-
-updateTime();
-
-setInterval(function() {
-    updateTime();
-}, 60000);
-</script>
 
 </body>
 

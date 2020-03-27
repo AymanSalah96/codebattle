@@ -50,43 +50,24 @@ public class ProblemController {
     }
 
     @GetMapping("/problems")
-    public String getProblemsPage(Model model, RedirectAttributes redirectAttributes) {
-        List<Problem> problemList = problemService.getAllProblems();
-        model.addAttribute("problemsList", problemList);
-        return "problem/index";
+    public String getProblemsPage() {
+        String username = userService.getAuthenticatedUsername();
+        if(username.equalsIgnoreCase("anonymousUser"))
+            return "redirect:/";
+        return "redirect:/problems/author/" + username;
     }
 
+
     @GetMapping("/problems/new")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getProblemCreationPage(Model model) {
         model.addAttribute("problem", new Problem());
         return "problem/new";
     }
 
-    @GetMapping("/problems/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public String getProblemDetails(@PathVariable("id") long problemId,
-                                    Model model,
-                                    RedirectAttributes redirectAttributes) {
-        Problem problem = problemService.getProblemById(problemId);
-        if(null == problem) {
-            redirectAttributes.addFlashAttribute("alert", "Problem not found");
-            redirectAttributes.addFlashAttribute("alertType", "primary");
-            return "redirect:/";
-        }
-        String username = userService.getAuthenticatedUsername();
-        if(!problem.getCreatorUsername().equalsIgnoreCase(username))
-            throw new AccessDeniedException("You don't have any permission to access this page");
-
-        model.addAttribute("problem", problem);
-        return "problem/details";
-    }
-
-
-
 
     @PostMapping("/problems/new")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String postNewProblem(@RequestParam("ioFiles")MultipartFile[] ioFiles,
                                  @ModelAttribute("problem") Problem problem,
                                  BindingResult result,
@@ -106,7 +87,7 @@ public class ProblemController {
     }
 
     @GetMapping("/problems/author/{username}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String getUserOwnProblemsPage(@PathVariable("username") String username, Model model) {
         List<Problem> problemList = problemService.getProblemsCreatedByUsername(username);
         model.addAttribute("problemsList", problemList);
@@ -115,14 +96,14 @@ public class ProblemController {
 
 
     @GetMapping("/problems/edit/{id}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String getEditProblemPage(@PathVariable("id") long problemId, @RequestParam("username") String username, Model model, RedirectAttributes redirectAttributes) {
         Problem problem = problemService.getProblemById(problemId);
 
         if(null == problem) {
             redirectAttributes.addFlashAttribute("alert", "Problem not found");
             redirectAttributes.addFlashAttribute("alertType", "primary");
-            return "redirect:/problems";
+            return "redirect:/problems/author/" + username;
         }
 
         if(!problem.getCreatorUsername().equalsIgnoreCase(username)) {
@@ -172,11 +153,10 @@ public class ProblemController {
             e.printStackTrace();
         }
 
-
     }
 
     @PostMapping("/problems/edit/{id}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String postEditProblem(@PathVariable("id") long problemId,
                                   @RequestParam("ioFiles")MultipartFile[] ioFiles,
                                   @RequestParam("username") String username,
@@ -202,8 +182,11 @@ public class ProblemController {
         }
         if(ioFiles.length > 0 && !ioFiles[0].getOriginalFilename().isEmpty()) {
             List<String> ioFilesErrors = FileUploadValidator.validateProblemIOFiles(ioFiles);
-            model.addAttribute("ioFilesErrors", ioFilesErrors);
-            return "problem/edit";
+            if(!ioFilesErrors.isEmpty()) {
+                model.addAttribute("ioFilesErrors", ioFilesErrors);
+                model.addAttribute("problem", existingProblem);
+                return "problem/edit";
+            }
         }
         Helper.replaceNotNullProperties(existingProblem, problem);
         problemService.editProblem(existingProblem, ioFiles);

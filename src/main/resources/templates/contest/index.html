@@ -17,13 +17,15 @@
 <header th:replace="fragments/header :: header('contests')">...</header>
 
 <div class="container">
-    <div class="text-right createBtn" sec:authorize="isAuthenticated()">
-        <a type="button" class="btn btn-dark" th:href="@{/contests/creator/} + ${#authentication.getPrincipal().getUsername()}">
-            My Contests
-        </a>
-        <a type="button" class="btn btn-dark" th:href="@{/contests/new}">
-            <i class="fas fa-plus-circle"></i> New
-        </a>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="text-right createBtn" sec:authorize="isAuthenticated()">
+            <a type="button" class="btn btn-dark" th:href="@{/contests/creator/} + ${#authentication.getPrincipal().getUsername()}">
+                My Contests
+            </a>
+            <a type="button" class="btn btn-dark" th:href="@{/contests/new}">
+                <i class="fas fa-plus-circle"></i> New
+            </a>
+        </div>
     </div>
     <h5>Contests</h5>
     <div class="alert alert-primary" role="alert" th:if="${contestsList==null or contestsList.isEmpty()}">
@@ -58,6 +60,8 @@
             <td style="width:6em">
                 <div th:if="${contestStatus.equals('FINISHED')}">
                     Finished
+                    <br />
+                    <a th:href="@{/contests/} + ${contest.id} + '/standings'" style="color: #007bff">Standings</a>
                 </div>
                 <div th:if="${contestStatus.equals('RUNNING')}">
                     <span class="contestStartDateMoment" th:text="${contest.durationInMinutes}"></span>
@@ -71,11 +75,26 @@
                 </div>
             </td>
             <td style="width:4em">
-                <span><a th:text="'x' + ${contest.participants.size()}" th:href="@{/contestants/} + ${contest.id} + '/participants'"></a></span>
-                <form sec:authorize="isAuthenticated()"  th:if="${!@contestService.isRegisteredInContest(contest.id, #authentication.getPrincipal().getUsername())}" th:action="@{/contests/} + ${contest.id} + '/register'" th:method="POST">
-                    <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
-                    <button style="" class="btn btn-primary btn-sm">Register</button>
-                </form>
+                <span th:text="'x' + ${contest.participants.size()}"></span>
+                <div sec:authorize="isAuthenticated()">
+                    <div th:if="${!contestStatus.equals('FINISHED')}">
+                        <div th:with="isRegistered=${@contestService.isRegisteredInContest(contest.id, #authentication.getPrincipal().getUsername())}">
+                            <div th:if="${!isRegistered}">
+                                <form  th:action="@{/contests/} + ${contest.id} + '/register'" th:method="POST">
+                                    <input type="hidden" name="username" th:value="${#authentication.getPrincipal().getUsername()}">
+                                    <button class="btn btn-primary btn-sm" style="min-width: 5em">Register</button>
+                                </form>
+                            </div>
+                            <div th:if="${isRegistered and !contestStatus.equals('NOT_STARTED')}">
+                                <a type="button" class="btn btn-primary btn-sm" th:href="@{/contests/} + ${contest.id}" style="min-width: 5em">Enter</a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div th:if="${contestStatus.equals('FINISHED')}">
+                        <a type="button" class="btn btn-success btn-sm" th:href="@{/contests/} + ${contest.id}" style="min-width: 5em">Up Solve</a>
+                    </div>
+                </div>
             </td>
         </tr>
         </tbody>

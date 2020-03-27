@@ -18,9 +18,11 @@
                     <li class="nav-item" th:classappend="${current} == 'home' ? 'active' : ''">
                         <a class="nav-link" th:href="@{/}">Home</a>
                     </li>
-                    <li class="nav-item" th:classappend="${current} == 'problems' ? 'active' : ''">
-                        <a class="nav-link" th:href="@{/problems}">Problems</a>
-                    </li>
+                    <div sec:authorize="hasRole('ROLE_ADMIN')">
+                        <li class="nav-item" th:classappend="${current} == 'problems' ? 'active' : ''">
+                            <a class="nav-link" th:href="@{/problems/author/} + ${#authentication.getPrincipal().getUsername()}">My Problems</a>
+                        </li>
+                    </div>
                     <li class="nav-item" th:classappend="${current} == 'contests' ? 'active' : ''">
                         <a class="nav-link" th:href="@{/contests}">Contests</a>
                     </li>
@@ -30,7 +32,7 @@
                     <li sec:authorize="isAuthenticated()">
                         <a th:href="@{/profile/} + ${#authentication.getPrincipal().getUsername()}">
                             <div class="avatar">
-                                <img th:src="${user} and ${user.photo} ? @{'/uploads/photos/' + ${user.photo}} : @{/images/avatar.png}">
+                                <img th:src="${#authentication.getPrincipal().getPhoto()} ? @{'/uploads/photos/' + ${#authentication.getPrincipal().getPhoto()}} : @{/images/avatar.png}">
                             </div>
                         </a>
                     </li>

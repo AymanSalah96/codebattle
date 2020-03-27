@@ -17,13 +17,15 @@
 <header th:replace="fragments/header :: header('problems')">...</header>
 
 <div class="container">
-    <div class="text-right createBtn" sec:authorize="isAuthenticated()">
-        <a type="button" class="btn btn-dark" th:href="@{/problems/author/} + ${#authentication.getPrincipal().getUsername()}">
-            My problems
-        </a>
-        <a type="button" class="btn btn-dark" th:href="@{/problems/new}">
-            <i class="fas fa-plus-circle"></i> New
-        </a>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="text-right createBtn" sec:authorize="isAuthenticated()">
+            <a type="button" class="btn btn-dark" th:href="@{/problems/author/} + ${#authentication.getPrincipal().getUsername()}">
+                My problems
+            </a>
+            <a type="button" class="btn btn-dark" th:href="@{/problems/new}">
+                <i class="fas fa-plus-circle"></i> New
+            </a>
+        </div>
     </div>
     <h5>Problems</h5>
     <div class="alert alert-primary" role="alert" th:if="${problemsList==null or problemsList.isEmpty()}">

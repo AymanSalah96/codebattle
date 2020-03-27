@@ -1,13 +1,7 @@
 package com.aymansalah.codebattle.services;
 
-import com.aymansalah.codebattle.models.Contest;
-import com.aymansalah.codebattle.models.Problem;
 import com.aymansalah.codebattle.util.judge.Helper;
 import com.aymansalah.codebattle.util.judge.SampleTest;
-import com.aymansalah.codebattle.util.judge.checkers.Checker;
-import com.aymansalah.codebattle.util.judge.checkers.LineChecker;
-import com.aymansalah.codebattle.util.judge.checkers.TokenSequenceChecker;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,14 +11,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class FileUploadService {
     private static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
     private static final String PHOTOS_DIRECTORY = UPLOAD_DIRECTORY + "/photos/";
     private static final String PROBLEMS_IO_DIRECTORY = UPLOAD_DIRECTORY + "/problems/";
-    private static final String SUBMISSIONS_DIRECTORY = UPLOAD_DIRECTORY + "/submissions/";
+
     @Autowired
     private UserService userService;
 
@@ -43,7 +40,7 @@ public class FileUploadService {
         final String problemDirectory = PROBLEMS_IO_DIRECTORY + problemId + "/";
         createDirectoriesIfNotExists(problemDirectory);
         for(int i = 0; i < ioFiles.length; i++) {
-            Path path = Paths.get(problemDirectory + ioFiles[i].getOriginalFilename());
+            Path path = Paths.get(problemDirectory + unifyIOFileName(ioFiles[i].getOriginalFilename()));
             Files.write(path, ioFiles[i].getBytes());
         }
     }
@@ -101,30 +98,45 @@ public class FileUploadService {
         return new ArrayList<File>(Arrays.asList(new File(directory).listFiles()));
     }
 
-    public boolean saveSubmittedOutput(Contest contest,  Problem problem, String username, MultipartFile file) {
-        String submissionDirectory = SUBMISSIONS_DIRECTORY + username + "/" + problem.getId() + "/";
-        createDirectoriesIfNotExists(submissionDirectory);
-        Path path = Paths.get(submissionDirectory + file.getOriginalFilename());
-        try {
-            Files.write(path, file.getBytes());
-            File judgeTestFile = getMainTestOutputFileForProblemId(problem.getId());
-            if(null == judgeTestFile)
-                return false;
-            Checker checker = null;
-            switch (problem.getCheckerType()) {
-                case WCMP:
-                    checker = new TokenSequenceChecker();
-                    break;
-                default:
-                    checker = new LineChecker();
-            }
+    public void updateProblemFiles(long problemId, MultipartFile[] ioFiles) {
+        final String problemDirectory = PROBLEMS_IO_DIRECTORY + problemId + "/";
 
-            boolean result = checker.compare(judgeTestFile, new File(path.toString()));
-            Files.deleteIfExists(path);
-            return result;
-        } catch (IOException e) {
-            e.printStackTrace();
+        clearDirectory(problemDirectory);
+
+        createDirectoriesIfNotExists(problemDirectory);
+        for(int i = 0; i < ioFiles.length; i++) {
+            Path path = Paths.get(problemDirectory + unifyIOFileName(ioFiles[i].getOriginalFilename()));
+            try {
+                Files.write(path, ioFiles[i].getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return false;
+
+    }
+
+    private void clearDirectory(String problemDirectory) {
+        File dir = new File(problemDirectory);
+        if(!dir.exists())
+            return;
+        String[] oldFiles = dir.list();
+        for(String name : oldFiles) {
+            File curFile = new File(dir.getPath(), name);
+            curFile.delete();
+        }
+    }
+
+    private String unifyIOFileName(String s) {
+        if(Helper.isInputFile(s)) {
+            if(Helper.fileNameStartsWith(s, "sample"))
+                return "sample.in";
+            else
+                return "1.in";
+        } else {
+            if(Helper.fileNameStartsWith(s, "sample"))
+                return "sample.out";
+            else
+                return "1.out";
+        }
     }
 }

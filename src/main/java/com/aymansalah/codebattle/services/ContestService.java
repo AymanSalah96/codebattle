@@ -6,6 +6,7 @@ import com.aymansalah.codebattle.repositories.ContestProblemsRepository;
 import com.aymansalah.codebattle.repositories.ContestRepository;
 import com.aymansalah.codebattle.util.judge.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class ContestService {
     private ContestProblemsRepository contestProblemsRepository;
 
     public List<Contest> getAllContests() {
-        return contestRepository.findAll();
+        return contestRepository.findAll(Sort.by(Sort.Direction.DESC, "creationDate"));
     }
 
     public List<Contest> getContestsCreatedByUsername(String username) {

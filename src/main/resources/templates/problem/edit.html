@@ -78,32 +78,20 @@
                 <li><small class="form-text text-muted">Output files must end with '.out'</small></li>
                 <li> <small class="form-text text-muted">Each input must has the same name of it's output file</small></li>
                 <li><small class="form-text text-muted">Sample files must begin with 'sample' and follow all the conditions above</small></li>
-                <li><small class="form-text text-muted">Must exists at least one sample and one main test files</small></li>
+                <li><small class="form-text text-muted">Only one sample and one main test files required</small></li>
             </ul>
         </div>
-        <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label>Score</label>
-                    <input type="number" class="form-control" placeholder="Score" min="10" step="1" th:value="${problem.score}" th:field="*{score}">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label>Checker</label>
-                    <select class="form-control" th:field="*{checkerType}">
-                        <option th:each="checkerOpt : ${T(com.aymansalah.codebattle.util.judge.checkers.CheckerType).values()}"
-                                th:value="${checkerOpt}"
-                                th:text="${checkerOpt.getLabel()}"
-                                th:selected="${problem.checkerType == checkerOpt}">
-                        </option>
-                    </select>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Checker</label>
+            <select class="form-control" th:field="*{checkerType}">
+                <option th:each="checkerOpt : ${T(com.aymansalah.codebattle.util.judge.checkers.CheckerType).values()}"
+                        th:value="${checkerOpt}"
+                        th:text="${checkerOpt.getLabel()}"
+                        th:selected="${problem.checkerType == checkerOpt}">
+                </option>
+            </select>
         </div>
-        <ul class="text-danger" th:if="${#fields.hasErrors('score')}" >
-            <li  th:each="err: ${#fields.errors('score')}" th:text="${err}"></li>
-        </ul>
+
         <div class="text-right form-group">
             <button type="submit" class="btn-round btn btn-primary">Save</button>
         </div>

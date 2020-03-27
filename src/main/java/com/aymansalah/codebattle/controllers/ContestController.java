@@ -51,14 +51,14 @@ public class ContestController {
     }
 
     @GetMapping("/contests/new")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getContestCreationPage(Model model) {
         model.addAttribute("contest", new Contest());
         return "contest/new";
     }
 
     @GetMapping("/contests/creator/{username}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String getUserOwnContestsPage(@PathVariable("username") String username, Model model) {
         List<Contest> contestsList = contestService.getContestsCreatedByUsername(username);
         model.addAttribute("contestsList", contestsList);
@@ -66,7 +66,7 @@ public class ContestController {
     }
 
     @PostMapping("/contests/new")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String postNewContest(@ModelAttribute("contest") Contest contest,
                                  BindingResult result,
                                  RedirectAttributes redirectAttributes) {
@@ -81,7 +81,7 @@ public class ContestController {
     }
 
     @GetMapping("/contests/edit/{id}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String getEditContestPage(@PathVariable("id") long contestId,
                                      @RequestParam("username") String username,
                                      Model model,
@@ -120,7 +120,7 @@ public class ContestController {
 
 
     @PostMapping("/contests/{id}/addProblem")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String postAddProblemToContest(@PathVariable("id") long contestId,
                                           @RequestParam("username") String username,
                                           @RequestParam("problemId") long problemId,
@@ -161,7 +161,7 @@ public class ContestController {
     }
 
     @PostMapping("/contests/update/{id}")
-    @PreAuthorize("isAuthenticated() and #username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and #username == authentication.principal.username")
     public String postUpdateContest(@PathVariable("id") long contestId,
                                     @RequestParam("username") String username,
                                     @ModelAttribute("editContestForm") Contest updatedContest,
@@ -261,6 +261,14 @@ public class ContestController {
             redirectAttributes.addFlashAttribute("alertType", "primary");
             return "redirect:/contests";
         }
+
+        if(contest.getContestStatus() != Contest.Status.FINISHED &&
+                !contestService.isRegisteredInContest(contestId, username)) {
+            redirectAttributes.addFlashAttribute("alert", "Please register in contest first");
+            redirectAttributes.addFlashAttribute("alertType", "primary");
+            return "redirect:/contests";
+        }
+
         Problem problem = contestService.getProblemIndexInContest(contestId, problemIndex);
         boolean result = false;
         switch (contest.getContestStatus()) {
@@ -309,4 +317,5 @@ public class ContestController {
         model.addAttribute("rankList", rankList);
         return "contest/standings";
     }
+
 }

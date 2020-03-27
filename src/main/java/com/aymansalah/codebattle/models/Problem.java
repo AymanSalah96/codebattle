@@ -52,10 +52,6 @@ public class Problem {
     @Column(name = "problem_creation_date")
     private Date creationDate;
 
-    @NotNull
-    @Column(name = "problem_score")
-    private int score;
-
     @Column(name = "problem_notes")
     private String notes;
 

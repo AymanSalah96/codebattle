@@ -20,10 +20,10 @@ public class TokenSequenceChecker extends Checker {
     }
 
     @Override
-    public boolean compare(File judgeOutput, File participantOutput) {
+    public boolean compare(File judgeOutput, String participantOutput) {
         try {
             judgeFileReader = new BufferedReader(new FileReader(judgeOutput));
-            participantFileReader = new BufferedReader(new FileReader(participantOutput));
+            participantFileReader = new BufferedReader(new StringReader(participantOutput));
 
             while(null != (judgeLine = judgeFileReader.readLine())) {
                 judgeFileContentBuilder.append(judgeLine);

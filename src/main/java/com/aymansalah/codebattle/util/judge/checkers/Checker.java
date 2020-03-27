@@ -6,6 +6,6 @@ import java.util.List;
 
 public abstract class Checker {
 
-    public abstract boolean compare(File judgeOutput, File participantOutput);
+    public abstract boolean compare(File judgeOutput, String participantOutput);
 
 }

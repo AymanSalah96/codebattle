@@ -31,13 +31,15 @@
         <tr>
             <th>#</th>
             <th>Name</th>
+            <th>ID</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         <tr class="table-row " th:each="problem,iter : ${problemsList}">
             <td th:text="${iter.count}"></td>
-            <td><a  th:text="${problem.name}" th:href="@{/problems/} + ${problem.id}"></a></td>
+            <td><a  th:text="${problem.name}" th:href="@{/problems/edit/} + ${problem.id} + '?username=' + ${#authentication.getPrincipal().getUsername()}"></a></td>
+            <td th:text="${problem.id}"></td>
             <td><a th:href="@{/problems/edit/} + ${problem.id} + '?username=' + ${#authentication.getPrincipal().getUsername()}"><i class="fas fa-edit"></i></a></td>
         </tr>
         </tbody>
