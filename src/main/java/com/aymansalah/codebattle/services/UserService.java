@@ -86,4 +86,8 @@ public class UserService implements UserDetailsService {
         }
         return username;
     }
+
+    public void addRole(String username, String role) {
+        authGroupRepository.saveAndFlush(new AuthGroup(username, role));
+    }
 }

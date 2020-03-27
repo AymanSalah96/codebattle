@@ -3,8 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" th:href="@{../css/all.min.css}">
     <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{../css/flag-icon.min.css}">
     <link rel="stylesheet" th:href="@{../css/main.css}">
@@ -106,7 +105,6 @@
 <script th:src="@{../js/popper.min.js}" ></script>
 <script th:src="@{../js/bootstrap.min.js}" ></script>
 <script th:src="@{../js/moment-with-locales.min.js}"></script>
-<script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script>
 
 var contestsDurations = {};
@@ -128,23 +126,28 @@ function updateTime() {
         var now = moment();
         if(contestStartDate !== undefined) {
             var contestMoment = moment(contestStartDate);
-            var contestTimeInSeconds = contestMoment.seconds() + contestMoment.minutes() * 60 + contestMoment.hours() * 60 * 60;
-            var contestEndTimeInSeconds = contestTimeInSeconds + contestDurationInSeconds;
-            var nowTimeInSeconds = now.seconds() + now.minutes() * 60 + now.hours() * 60 * 60;
-            if(nowTimeInSeconds <= contestEndTimeInSeconds) { // before or running
-                var remainingTimeInSeconds;
-                if(nowTimeInSeconds >= contestTimeInSeconds) { // Contest is running
-                    remainingTimeInSeconds = contestEndTimeInSeconds - nowTimeInSeconds;
-                     $(this).find(".contestStatusDescription").html("Running");
-                } else if(nowTimeInSeconds < contestTimeInSeconds) { // not started
-                    remainingTimeInSeconds = contestTimeInSeconds - nowTimeInSeconds;
-                    $(this).find(".contestStatusDescription").html("Before");
+            var fromNow = contestMoment.fromNow();
+            if(now.dayOfYear() < contestMoment.dayOfYear()) {
+                $(this).find(".contestStartDateMoment").html(fromNow);
+            } else {
+                var contestTimeInSeconds = contestMoment.seconds() + contestMoment.minutes() * 60 + contestMoment.hours() * 60 * 60;
+                var contestEndTimeInSeconds = contestTimeInSeconds + contestDurationInSeconds;
+                var nowTimeInSeconds = now.seconds() + now.minutes() * 60 + now.hours() * 60 * 60;
+                if(nowTimeInSeconds <= contestEndTimeInSeconds) { // before or running
+                    var remainingTimeInSeconds;
+                    if(nowTimeInSeconds >= contestTimeInSeconds) { // Contest is running
+                        remainingTimeInSeconds = contestEndTimeInSeconds - nowTimeInSeconds;
+                         $(this).find(".contestStatusDescription").html("Running");
+                    } else if(nowTimeInSeconds < contestTimeInSeconds) { // not started
+                        remainingTimeInSeconds = contestTimeInSeconds - nowTimeInSeconds;
+                        $(this).find(".contestStatusDescription").html("Before");
+                    }
+                    var hh = Math.floor(remainingTimeInSeconds / 3600);
+                    remainingTimeInSeconds %= 3600;
+                    var mm = Math.floor(remainingTimeInSeconds / 60);
+                    var ss = remainingTimeInSeconds % 60;
+                    $(this).find(".contestStartDateMoment").html(format(hh) + ":" + format(mm) + ":" + format(ss));
                 }
-                var hh = Math.floor(remainingTimeInSeconds / 3600);
-                remainingTimeInSeconds %= 3600;
-                var mm = Math.floor(remainingTimeInSeconds / 60);
-                var ss = remainingTimeInSeconds % 60;
-                $(this).find(".contestStartDateMoment").html(format(hh) + ":" + format(mm) + ":" + format(ss));
             }
         }
 

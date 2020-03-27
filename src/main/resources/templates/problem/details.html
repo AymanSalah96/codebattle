@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" type="text/css" th:href="@{../../../css/all.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../../css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../../css/flag-icon.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../../css/main.css}">
@@ -15,7 +15,7 @@
 
 <body>
 
-<header th:replace="fragments/header :: header('problems')">...</header>
+<header th:replace="fragments/header :: header('contests')">...</header>
 
 <div class="container" th:with="contestStatus = ${contest.getContestStatus().toString()}">
 
@@ -104,7 +104,6 @@
 <script th:src="@{../../../js/popper.min.js}"></script>
 <script th:src="@{../../../js/bootstrap.min.js}"></script>
 
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script"
         th:src="@{../../../js/tex-mml-chtml.js}">
 </script>

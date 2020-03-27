@@ -18,9 +18,9 @@ import java.util.List;
 
 @Service
 public class FileUploadService {
-    private static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
-    private static final String PHOTOS_DIRECTORY = UPLOAD_DIRECTORY + "/photos/";
-    private static final String PROBLEMS_IO_DIRECTORY = UPLOAD_DIRECTORY + "/problems/";
+    private static final String BASE_DIRECTORY = System.getProperty("user.dir") + "/src/main/";
+    private static final String PHOTOS_DIRECTORY = BASE_DIRECTORY + "/resources/static/uploads/photos/";
+    private static final String PROBLEMS_IO_DIRECTORY = BASE_DIRECTORY + "/webapp/WEB-INF/uploads/problems/";
 
     @Autowired
     private UserService userService;

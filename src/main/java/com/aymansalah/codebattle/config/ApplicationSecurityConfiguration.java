@@ -59,7 +59,8 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                         "/flags/**",
                         "/js/**",
                         "/images/**",
-                        "/uploads/**").permitAll()
+                        "/webfonts/**",
+                        "/uploads/photos/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

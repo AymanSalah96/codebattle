@@ -2,7 +2,7 @@
 
 
 <head>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link rel="stylesheet" th:href="@{../css/all.min.css}">
     <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{../css/flag-icon.min.css}">
     <link rel="stylesheet" th:href="@{../css/main.css}">
@@ -120,6 +120,17 @@
                                 <button type="submit" class="btn-round btn btn-primary">Upload</button>
                             </div>
                         </form>
+                        <div sec:authorize="hasRole('ROLE_OWNER')">
+                            <form th:action="@{/addAdmin}" th:method="POST">
+                                <div class="form-group">
+                                    <label>Add admin</label>
+                                    <input type="text" name="username" placeholder="Username" class="form-control">
+                                </div>
+                                <div class="text-right form-group">
+                                    <button type="submit" class="btn-round btn btn-danger">Add</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
