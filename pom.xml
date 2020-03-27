@@ -15,9 +15,9 @@
 	<description>Competitive Programming Platform</description>
 
 	<properties>
-		<source>13</source>
-		<target>13</target>
-		<java.version>13</java.version>
+		<source>1.8</source>
+		<target>1.8</target>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>

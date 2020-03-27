@@ -5,6 +5,7 @@ import com.aymansalah.codebattle.models.Problem;
 import com.aymansalah.codebattle.models.User;
 import com.aymansalah.codebattle.services.*;
 import com.aymansalah.codebattle.util.RankRecord;
+import com.aymansalah.codebattle.validators.CommonValidators;
 import com.aymansalah.codebattle.validators.ContestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -248,7 +249,7 @@ public class ContestController {
                                 RedirectAttributes redirectAttributes) {
 
         if(null == file ||
-        file.getOriginalFilename().isBlank()) {
+                CommonValidators.isBlank(file.getOriginalFilename())) {
             redirectAttributes.addFlashAttribute("outputFileSubmitErrors", "You should choose a file");
             return "redirect:/contests/" + contestId + "/problems/" + problemIndex;
         }
