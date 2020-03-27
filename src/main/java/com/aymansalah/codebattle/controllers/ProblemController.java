@@ -9,7 +9,6 @@ import com.aymansalah.codebattle.services.UserService;
 import com.aymansalah.codebattle.util.judge.Helper;
 import com.aymansalah.codebattle.validators.FileUploadValidator;
 import com.aymansalah.codebattle.validators.ProblemValidator;
-import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.AccessDeniedException;

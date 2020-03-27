@@ -3,27 +3,13 @@ package com.aymansalah.codebattle.validators;
 import com.aymansalah.codebattle.models.Problem;
 import org.springframework.validation.BindingResult;
 
-import java.util.Date;
-
 public class ProblemValidator {
-    // TODO: Complete this method
+
     public static void validate(Problem problem, BindingResult result) {
         validateName(problem.getName(), result);
         validateInputDescription(problem.getInputDescription(), result);
         validateOutputDescription(problem.getOutputDescription(), result);
         validateDescription(problem.getDescription(), result);
-        validateCreationDate(problem.getCreationDate(), result);
-        validateNotes(problem.getNotes(), result);
-        validateTutorial(problem.getTutorial(), result);
-    }
-
-    private static void validateTutorial(String tutorial, BindingResult result) {
-    }
-
-    private static void validateNotes(String notes, BindingResult result) {
-    }
-
-    private static void validateCreationDate(Date creationDate, BindingResult result) {
     }
 
     private static void validateDescription(String description, BindingResult result) {

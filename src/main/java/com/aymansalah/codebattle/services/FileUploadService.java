@@ -45,7 +45,9 @@ public class FileUploadService {
         }
     }
 
-    private static String getPersonalizedFileNameForUsername(String username, MultipartFile file) {return username + getFileExtension(file.getOriginalFilename());}
+    private static String getPersonalizedFileNameForUsername(String username, MultipartFile file) {
+        return username + getFileExtension(file.getOriginalFilename());
+    }
     private static void createDirectoriesIfNotExists(String path) {
         new File(path).mkdirs();
     }

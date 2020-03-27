@@ -4,9 +4,7 @@ import com.aymansalah.codebattle.util.judge.Helper;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FileUploadValidator {
 

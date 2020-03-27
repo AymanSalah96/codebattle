@@ -1,13 +1,11 @@
 package com.aymansalah.codebattle.services;
 
-import com.aymansalah.codebattle.models.AuthGroup;
 import com.aymansalah.codebattle.auth.UserPrincipal;
+import com.aymansalah.codebattle.models.AuthGroup;
 import com.aymansalah.codebattle.models.User;
 import com.aymansalah.codebattle.repositories.AuthGroupRepository;
 import com.aymansalah.codebattle.repositories.UserRepository;
-import com.aymansalah.codebattle.util.NullAwareBeanUtilsBeanAndIgnoreIdProperty;
 import com.aymansalah.codebattle.util.judge.Helper;
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Service

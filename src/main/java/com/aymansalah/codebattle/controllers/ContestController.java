@@ -2,7 +2,6 @@ package com.aymansalah.codebattle.controllers;
 
 import com.aymansalah.codebattle.models.Contest;
 import com.aymansalah.codebattle.models.Problem;
-import com.aymansalah.codebattle.models.Submission;
 import com.aymansalah.codebattle.models.User;
 import com.aymansalah.codebattle.services.*;
 import com.aymansalah.codebattle.util.RankRecord;

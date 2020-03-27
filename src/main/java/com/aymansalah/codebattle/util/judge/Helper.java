@@ -1,6 +1,5 @@
 package com.aymansalah.codebattle.util.judge;
 
-import com.aymansalah.codebattle.models.User;
 import com.aymansalah.codebattle.util.NullAwareBeanUtilsBeanAndIgnoreIdProperty;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.web.multipart.MultipartFile;
