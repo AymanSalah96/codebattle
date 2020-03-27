@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{../../../css/profileSummaryCard.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../../css/secondaryNav.css}">
 
-    <title>CodeBattle | Edit Problem</title>
+    <title th:text="'CodeBattle | ' + ${problem.index} + ' - ' + ${problem.name}"></title>
 </head>
 
 <body>

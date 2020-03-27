@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{../css/main.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../css/profileSummaryCard.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../css/secondaryNav.css}">
-    <title>CodeBattle | Contest Creator</title>
+    <title th:text="'CodeBattle | ' + ${contest.name}"></title>
 </head>
 
 <body>
