@@ -32,7 +32,7 @@
                     <li sec:authorize="isAuthenticated()">
                         <a th:href="@{/profile/} + ${#authentication.getPrincipal().getUsername()}">
                             <div class="avatar">
-                                <img th:src="${#authentication.getPrincipal().getPhoto()} ? @{'/uploads/photos/' + ${#authentication.getPrincipal().getPhoto()}} : @{/images/avatar.png}">
+                                <img th:src="${#authentication.getPrincipal().getPhoto() != null} ? @{'/uploads/photos/' + ${#authentication.getPrincipal().getPhoto()}} : @{/images/avatar.png}">
                             </div>
                         </a>
                     </li>
